@@ -43,8 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84bdd12bd3145b144a47594f105eb316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkPrefabs:
-  - {fileID: 687967951463797681, guid: 4ace356d03d64af4da85ba9625075b09, type: 3}
-  - {fileID: 6657565272018368760, guid: 6be9619fe8961734a83ca4bad6bb5acd, type: 3}
-  chunkCount: 25
+  chunkPrefab: {fileID: 687967951463797681, guid: 4ace356d03d64af4da85ba9625075b09, type: 3}
+  chunkCount: 30
   spawnDelay: 0

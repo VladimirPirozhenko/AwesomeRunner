@@ -2,17 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider))]
 public class Obstacle : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public BoxCollider Collider { get; private set; }
+    private void Awake()
+    {
+        Collider = GetComponent<BoxCollider>();
+    }
+    private void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        
+        if (other.TryGetComponent(out Player player))
+        {
+            if (!player.IsInvincible)
+            {
+                player.Lives--;
+                if (player.Lives < 1)
+                {
+                    player.StateMachine.SetState(player.PlayerDeadState);
+                }
+                player.GrantInvincibility();
+            } 
+        }
     }
 }

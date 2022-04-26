@@ -8,6 +8,7 @@ abstract public class State<T> where T : MonoBehaviour
 	public virtual void FixedTick() { }
 	public virtual void OnStateEnter() { }
     public virtual void OnStateExit() { }
-	
+
+	//public virtual void Init(StateMachine<T> sm, T obj) { }
 }
 

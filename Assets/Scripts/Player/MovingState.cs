@@ -1,21 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public abstract class MovingState : State<Player>
 {
-    protected float speed = 15; 
+    protected float speed = 15; //SO
     protected Player player;
-    protected Vector3 moveDirection = Vector3.zero;
     protected CharacterController characterController;
-    protected float gravity = -9.8f;   
+    protected const float gravity = -9.8f;
 
-    private Vector3 targetPosition = Vector3.zero;
-    private EDirection? direction = null;
-    private const float kLaneGap = 2.5f;
-    private bool isChangingLane = false;
-    private int targetRow = 0; 
-    //private int[] rows = new int[] { -1, 0, 1 } ;
     public MovingState(Player player, CharacterController controller)
     {
         this.player = player;
@@ -27,48 +21,41 @@ public abstract class MovingState : State<Player>
 
     public override void Tick()
     {
-        DetectInput();
-        MoveForward();
-        if (isChangingLane)
+        HandleDirection(); 
+        player.HorizontalDeltaPosition.z = speed * Time.deltaTime;
+        if (player.LaneSystem.isChangingLane)
         {
             SwitchLane();
         }
-        if (!characterController.isGrounded && player.StateMachine.CurrentState != player.JumpState)
+        HandleGravity();
+        Vector3 deltaPosition = new Vector3(player.HorizontalDeltaPosition.x,
+                                            player.VerticalDeltaPosition, 
+                                            player.HorizontalDeltaPosition.z);
+        characterController.Move(deltaPosition);
+    }
+    public void HandleGravity()
+    {
+        if (characterController.isGrounded)
         {
-            moveDirection.y = gravity * Time.deltaTime;
+            player.VerticalDeltaPosition = 0;
+        }
+        else
+        {
+            player.VerticalDeltaPosition += gravity * Time.deltaTime;
         }
     }
-    private void DetectInput()
+    private void HandleDirection()
     {
-        direction = player.input.ScanDirection();
-        switch (direction)
+        switch (player.Direction)
         {
             case EDirection.RIGHT:
-                targetRow++;
-                if (targetRow > 1)
-                {
-                    targetRow = 1;
-                }
-                else
-                {
-                    targetPosition.x += kLaneGap;
-                    isChangingLane = true;
-                }
+                player.LaneSystem.TargetLane++;
                 break;
             case EDirection.LEFT:
-                targetRow--;
-                if (targetRow < -1)
-                {
-                    targetRow = -1;
-                }
-                else
-                {
-                    targetPosition.x -= kLaneGap;
-                    isChangingLane = true;
-                }     
+                player.LaneSystem.TargetLane--;
                 break;
             case EDirection.UP:
-                player.StateMachine.SetState(player.JumpState);
+                player.StateMachine.SetState(player.PlayerJumpState);
                 break;
             case EDirection.DOWN:
                 break;
@@ -76,31 +63,25 @@ public abstract class MovingState : State<Player>
     }
     public void SwitchLane()
     {
-        if (targetPosition.x == player.transform.position.x)
+        if (player.LaneSystem.TargetX == player.transform.position.x)//player.TargetPosX
         {
-            moveDirection.x = 0;
-            isChangingLane = false;
-            direction = null;
-            Debug.Log(player.transform.position.x);
+            player.HorizontalDeltaPosition.x = 0;
+            player.LaneSystem.isChangingLane = false;
+            return;
         }
-            
-        Vector3 moveDiff = (targetPosition.x - player.transform.position.x) * Vector3.right;
-        Vector3 moveDir = moveDiff.normalized * speed * Time.deltaTime;
-        if (moveDir.sqrMagnitude < moveDiff.sqrMagnitude)
+        Vector3 diffX = (player.LaneSystem.TargetX - player.transform.position.x) * Vector3.right;//player.TargetPosX
+        Vector3 deltaX = diffX.normalized * speed * Time.deltaTime;
+        //horizontalDeltaPosition.x = Mathf.Min(deltaX.sqrMagnitude, diffX.sqrMagnitude) * Mathf.Sign(diffX.x);
+        //horizontalDeltaPosition.x = Mathf.Min(Mathf.Abs(deltaX + player.transform.position.x),
+        //    Mathf.Abs(targetPos.x)) * Mathf.Sign(deltaX + player.transform.position.x)) // Â ÍÓËÅ ÍÅ ÐÀÁÎÒÀÅÒ
+        //if (deltaX.sqrMagnitude < diffX.sqrMagnitude)
+        if (deltaX.sqrMagnitude < diffX.sqrMagnitude)
         {
-            moveDirection.x = moveDir.x;
+            player.HorizontalDeltaPosition.x = deltaX.x;
         }
         else
         {
-            moveDirection.x = moveDiff.x;
+            player.HorizontalDeltaPosition.x = diffX.x;
         }
-    }
-    public void MoveForward()
-    {
-        moveDirection.z = speed * Time.deltaTime;
-    }
-    public void Move()
-    {
-        characterController.Move(moveDirection);
     }
 }

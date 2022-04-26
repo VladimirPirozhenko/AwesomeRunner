@@ -2,83 +2,61 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+//Передавать Action по добавлению и удалению из пула
 public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
 {
     [SerializeField] public int Capacity { get; private set; }
-    public T First 
-    {
-        get
-        {
-            return pool.First.Value;
-        }
-    }
-    public T Last
-    {
-        get
-        {
-            return pool.Last.Value;
-        }
-    }  
-    private List<T> prefabs;
-    private LinkedList<T> pool;
-    public void FirstToLast()
-    {
-        T first = First;
-        pool.RemoveFirst();
-        pool.AddLast(first);
-    }
-    
-    public ObjectPool(in List<T> prefabs, int initialCapacity, bool activeByDefault = false)
+    private Func<T> actionOnCreate;
+    private Action<T> actionOnGet;
+    private Action<T> actionOnRelease;
+
+    private List<T> pool;
+    public ObjectPool(Func<T> actionOnCreate, Action<T> actionOnGet, Action<T> actionOnRelease, int initialCapacity)
     {
         Capacity = initialCapacity;
-        this.prefabs = prefabs;
-        pool = new LinkedList<T>();
+        this.actionOnCreate = actionOnCreate;
+        
+        this.actionOnGet = actionOnGet;
+        this.actionOnRelease = actionOnRelease;
+        pool = new List<T>();
         for (uint i = 0; i < Capacity; i++)
         {
-            var obj = createObject(prefabs[UnityEngine.Random.Range(0, prefabs.Count)], activeByDefault);
-            pool.AddLast(obj);
+            var obj = actionOnCreate();
+            var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
+            pool.Add(instance);
         }
     }
-
-    private T createObject(T prefab, bool activeByDefault = false)
+    public T this[int i]
     {
-        var instance = UnityEngine.Object.Instantiate(prefab, new Vector3(), new Quaternion());
-        instance.gameObject.SetActive(activeByDefault);
-        return instance;
+        get => pool[i];
+        set => pool[i] = value;
     }
+    public T TryGetFromPos(in Vector3 pos,bool isActive)
+    {
 
-    private bool TryGet(out T element)
-    {
-        if (pool.Count > 0)
-        {
-            foreach (var obj in pool)
-            {
-                if (!obj.gameObject.activeInHierarchy)
-                {
-                    element = obj;
-                    element.gameObject.SetActive(true);
-                    return true;
-                }
-            }
-        }
-        element = null;
-        return false;
-    }
-    public T TryGetFromPos(Vector3 pos)
-    {
         foreach (var obj in pool)
         {
-            if (obj.gameObject.activeInHierarchy)
+            if (isActive)
             {
-                if (pos == obj.gameObject.transform.position)
+                if (obj.gameObject.activeInHierarchy && pos == obj.gameObject.transform.position)
                 {
-                    obj.gameObject.SetActive(true);
+                    actionOnGet.Invoke(obj);
                     return obj;
                 }
             }
+            else
+            {
+                if (!obj.gameObject.activeInHierarchy && pos == obj.gameObject.transform.position)
+                {
+                    actionOnGet.Invoke(obj);
+                    return obj;
+                }
+            } 
         }
         return null;
     }
+
     public T Get()
     {
         if (TryGet(out var element))
@@ -87,18 +65,49 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         }
         return ExpandPool();
     }
+    private bool TryGet(out T element)
+    {
+        List<T> inactiveObjects = pool.FindAll(obj => !obj.gameObject.activeInHierarchy);
+        if (pool.Count > 0)
+        {
+            var obj = inactiveObjects[UnityEngine.Random.Range(0, inactiveObjects.Count)];
+            element = obj;
+            actionOnGet.Invoke(element);
+            return true;
+        }
+        element = null;
+        return false;
+        //if (pool.Count > 0)
+        //{
+        //    foreach (var obj in pool)
+        //    {
+        //        if (!obj.gameObject.activeInHierarchy)
+        //        {
+        //            element = obj;
+        //            actionOnGet.Invoke(element);
+        //            return true;
+        //        }
+        //    }
+        //}
+        //element = null;
+        //return false;
+    }
     public T ExpandPool()
     {
-        var obj = createObject(prefabs[UnityEngine.Random.Range(0, pool.Count)], true);
+        var obj = actionOnCreate();
+        var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
+        //actionOnCreate.Invoke(obj);
         Capacity++;
-        pool.AddLast(obj);
-        return obj;
+        pool.Add(instance);
+        return instance;
     }
     public bool ReturnToPool(T obj)
     {
+        if (obj == null)
+            return false;
         if (obj.gameObject.activeInHierarchy)
         {
-            obj.gameObject.SetActive(false);
+            actionOnRelease.Invoke(obj);
             return true;
         }
         return false;
