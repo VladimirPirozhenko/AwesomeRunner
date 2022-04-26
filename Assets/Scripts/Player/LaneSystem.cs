@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LaneSystem : MonoBehaviour
 {
-    [SerializeField] private float laneWidth;
     [SerializeField] private int laneCount;
+    public List<int> Lanes { get; private set; }
     public float TargetX { get; set; }
     public bool isChangingLane { get; set; }
-    private int targetLane; 
-    private List<int> lanes;
+
+    [SerializeField] private float laneWidth;
     public float LaneWidth 
     {
         get
@@ -22,6 +22,7 @@ public class LaneSystem : MonoBehaviour
             laneWidth = value;
         }
     }
+    private int targetLane;
     public int TargetLane 
     { 
         get
@@ -32,11 +33,11 @@ public class LaneSystem : MonoBehaviour
         {
             if (value == targetLane)
                 return;
-            if (value < lanes[0])
+            if (value < Lanes[0])
             {
                 return;
             }
-            if (value > lanes[lanes.Count-1])
+            if (value > Lanes[Lanes.Count-1])
             {
                 return;
             }
@@ -56,10 +57,10 @@ public class LaneSystem : MonoBehaviour
 
     private void Awake()
     {
-        lanes = new List<int>(laneCount);
+        Lanes = new List<int>(laneCount);
         for (int i = 0; i < laneCount; i++)
         {
-            lanes.Add(i);    
+            Lanes.Add(i);    
         }
         targetLane = laneCount/2;
         TargetX = 0;
