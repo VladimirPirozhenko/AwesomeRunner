@@ -59,6 +59,8 @@ public abstract class MovingState : State<Player>
                 break;
             case EDirection.DOWN:
                 break;
+            default:
+                break;
         }
     }
     public void SwitchLane()

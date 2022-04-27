@@ -23,8 +23,8 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         for (uint i = 0; i < Capacity; i++)
         {
             var obj = actionOnCreate();
-            var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
-            pool.Add(instance);
+            //var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
+            pool.Add(obj);
         }
     }
     public T this[int i]
@@ -95,11 +95,11 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
     public T ExpandPool()
     {
         var obj = actionOnCreate();
-        var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
+        //var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
         //actionOnCreate.Invoke(obj);
         Capacity++;
-        pool.Add(instance);
-        return instance;
+        pool.Add(obj);
+        return obj;
     }
     public bool ReturnToPool(T obj)
     {

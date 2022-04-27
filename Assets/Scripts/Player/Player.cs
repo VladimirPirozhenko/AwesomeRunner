@@ -9,28 +9,34 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerAnimator))]
 public class Player : MonoBehaviour
 {
-    [SerializeField] private AnimationCurve jumpCurve;
-    public int Lives { get; set; }
+    
+    #region StateMachine
     public StateMachine<Player> StateMachine { get; private set; }
     public DeadState PlayerDeadState { get; private set; } 
     public JumpState PlayerJumpState { get; private set; }
     public GroundState PlayerGroundState { get; private set; }
-    public InvincibleState PlayerInvincibleState { get; private set; }
-   
-    public bool IsInvincible { get; private set; }
-    public int InvincibleTime { get; private set; } //PLAYER DATA ScriptableObject
-                                                
-    public EDirection? Direction { get; private set; }
+    //public InvincibleState PlayerInvincibleState { get; private set; }
+    #endregion
 
-    [HideInInspector]
-    public Vector3 HorizontalDeltaPosition;
-    public float VerticalDeltaPosition { get; set; }
-
+    #region Animation
     private PlayerAnimator playerAnimator;
-    private CharacterController characterController; 
+    [SerializeField] private AnimationCurve jumpCurve;
+    #endregion
+
+    #region PlayerProperties
+    public int Lives { get; set; }
+    public bool IsInvincible { get; private set; }
+    public int InvincibilityTime { get; private set; } //PLAYER DATA ScriptableObject
+    #endregion
+
+    #region MovementControl
     private IPlayerInput input;
+    private CharacterController characterController;                                   
+    public EDirection? Direction { get; private set; }
+    [HideInInspector] public Vector3 HorizontalDeltaPosition;
+    public float VerticalDeltaPosition { get; set; }
     public LaneSystem LaneSystem { get;  set; }
-    //[SerializeField] private GameObject lanePrefab;
+    #endregion
     private void Awake()
     {
         input = new ArrowKeysInput(); 
@@ -47,6 +53,7 @@ public class Player : MonoBehaviour
         HorizontalDeltaPosition = Vector3.zero;
         VerticalDeltaPosition = 0;
         Lives = 3;
+        InvincibilityTime = 3000;
     }
     private void Update()
     {
@@ -66,7 +73,7 @@ public class Player : MonoBehaviour
     public async void GrantInvincibility()
     {
         IsInvincible = true;
-        await Task.Delay(InvincibleTime);
+        await Task.Delay(InvincibilityTime);
         IsInvincible = false;
     }
 }

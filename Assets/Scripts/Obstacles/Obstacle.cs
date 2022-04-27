@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(Renderer))]
 public class Obstacle : MonoBehaviour
 {
     public BoxCollider Collider { get; private set; }
+    private Renderer renderer;// { get; set; } 
+    private Color defaultColor;
     private void Awake()
     {
         Collider = GetComponent<BoxCollider>();
+        renderer = GetComponent<Renderer>();
+        defaultColor = renderer.material.color;
     }
-    private void Start()
+    public void ResetToDefault()
     {
-        
-    }
-
-    private void Update()
-    {
-        
+        renderer.material.color = defaultColor;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -31,6 +31,7 @@ public class Obstacle : MonoBehaviour
                 {
                     player.StateMachine.SetState(player.PlayerDeadState);
                 }
+                renderer.material.color = Color.red;
                 player.GrantInvincibility();
             } 
         }
