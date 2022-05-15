@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
-public class Coin : MonoBehaviour, ICollectable
+public class Coin : MonoBehaviour, ICollectable,IResettable
 {
     public Renderer Renderer { get; private set; }
 
@@ -17,4 +17,8 @@ public class Coin : MonoBehaviour, ICollectable
         gameObject.SetActive(false);
     }
 
+    public void ResetToDefault()
+    {
+        gameObject.SetActive(true);
+    }
 }

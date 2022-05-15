@@ -10,17 +10,17 @@ public class PlayerController : MonoBehaviour, IResettable
    // [SerializeField] private ChunkSpawner spawner; 
     private PlayerHealth playerHealth;
     private PlayerStatistics playerStatistics;
-    private CharacterController characterController;
+    public CharacterController CharacterController { get; private set; }
     public float defaultHeight { get; private set; }
     public Vector3 defaultCenter { get; private set; }
-    public bool isGrounded => characterController.isGrounded;
+    public bool isGrounded => CharacterController.isGrounded;
     private void Start()
     {
         playerHealth = GetComponent<PlayerHealth>();
         playerStatistics = GetComponent<PlayerStatistics>();
-        characterController = GetComponent<CharacterController>();
-        defaultHeight = characterController.height;
-        defaultCenter = characterController.center;
+        CharacterController = GetComponent<CharacterController>();
+        defaultHeight = CharacterController.height;
+        defaultCenter = CharacterController.center;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -49,20 +49,20 @@ public class PlayerController : MonoBehaviour, IResettable
     
     public void Move(Vector3 deltaPosition)
     {
-        characterController.Move(deltaPosition);
+        CharacterController.Move(deltaPosition);
     }
     public void ChangeColliderHeight(float newHeight)
     {
-        characterController.height = newHeight;
+        CharacterController.height = newHeight;
     }
     public void ChangeColliderCenter(Vector3 newCenter)
     {
-        characterController.center = newCenter;
+        CharacterController.center = newCenter;
     }
     public void ResetToDefault()
     {
-        characterController.height = defaultHeight;
-        characterController.center = defaultCenter;
+        CharacterController.height = defaultHeight;
+        CharacterController.center = defaultCenter;
     }
 
 }

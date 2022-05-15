@@ -11,27 +11,9 @@ public class PlayerAnimator
     private string slideAnimStr = "Slide";
     private string idleAnimStr = "Idle";
 
-    //List<AnimationClip> animationClips = new List<AnimationClip>();
     public PlayerAnimator(Animator playerAnimator)
     {
-        this.animator = playerAnimator;//GetComponent<Animator>();
-        //for (int i = 0; i < animator.runtimeAnimatorController.animationClips.Length; i++)
-        //{
-        //    AnimationClip clip = animator.runtimeAnimatorController.animationClips[i];
-
-        //    AnimationEvent animationStartEvent = new AnimationEvent();
-        //    animationStartEvent.time = 0;
-        //    animationStartEvent.functionName = "AnimationStartHandler";
-        //    animationStartEvent.stringParameter = clip.name;
-
-        //    AnimationEvent animationEndEvent = new AnimationEvent();
-        //    animationEndEvent.time = clip.length;
-        //    animationEndEvent.functionName = "AnimationCompleteHandler";
-        //    animationEndEvent.stringParameter = clip.name;
-
-        //    clip.AddEvent(animationStartEvent);
-        //    clip.AddEvent(animationEndEvent);
-        //}
+        this.animator = playerAnimator;
     }
     public void SetRunState(bool isRunning)
     {
@@ -49,29 +31,8 @@ public class PlayerAnimator
     {
         animator.SetBool(slideAnimStr, isSliding);
     }
-    //public void AnimationStartHandler(string name)
-    //{
-    //    Debug.Log($"{name} animation start.");
-    //    OnAnimationStart?.Invoke(name);
-    //}
-    //public void AnimationCompleteHandler(string name)
-    //{
-    //    Debug.Log($"{name} animation start.");
-    //    OnAnimationComplete?.Invoke(name);
-    //}
-    //public bool OnAnimationEnd(string animationStr)
-    //{
-    //   if (animator.GetBool(animationStr))
-    //   {
-    //       // animator.fireEvents;
-    //        //animationClips[0].events.Length
-                
-    //       // if (animator.GetCurrentAnimatorStateInfo(0).)
-    //        //if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
-    //        //{
-    //        //    return true;
-    //        //}
-    //   }
-    //   return false;
-    //}
+    public void SetIdleState(bool isIdle)
+    {
+        animator.SetBool(idleAnimStr, isIdle);
+    }
 }

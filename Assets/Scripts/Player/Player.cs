@@ -19,18 +19,18 @@ public class Player : MonoBehaviour
     public JumpState PlayerJumpState { get; private set; }
     public GroundState PlayerGroundState { get; private set; }
     public SlideState PlayerSlideState { get; private set; }
-    public TurnState PlayerTurnState { get; private set; }
+    public StartingIdleState PlayerStartingIdleState { get; private set; }
     #endregion
 
     #region Animation
-    private PlayerAnimator playerAnimator;
-    [SerializeField] private AnimationCurve jumpCurve;
+    [SerializeField] private AnimationCurve jumpDeltaYCurve;
+    private PlayerAnimator playerAnimator;   
     #endregion
 
     #region PlayerComponents
     [SerializeField] private PlayerData playerData;
     public PlayerHealth PlayerHealth { get; private set; }
-    public PlayerController PlayerCollider { get; private set; }
+    public PlayerController PlayerController { get; private set; }
     public PlayerStatistics PlayerStatictics { get; private set; }
     
     public PlayerData PlayerData { get { return playerData; } }
@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
         input = new ArrowKeysInput();       
         playerAnimator = new PlayerAnimator(GetComponent<Animator>());   
         PlayerHealth = GetComponent<PlayerHealth>();
-        PlayerCollider = GetComponent<PlayerController>();
+        PlayerController = GetComponent<PlayerController>();
         PlayerStatictics = GetComponent<PlayerStatistics>();
         PlayerStateMachine = new StateMachine<Player>();
         InitStates();
@@ -66,10 +66,7 @@ public class Player : MonoBehaviour
     }
     private void Start()
     {
-        PlayerStateMachine.SetState(PlayerGroundState);
-        transform.position = new Vector3(0, 0, 30);
-        HorizontalDeltaPosition = Vector3.zero;
-        VerticalDeltaPosition = 0;
+        PlayerStateMachine.SetState(PlayerStartingIdleState);
     }
     private void Update()
     {
@@ -83,82 +80,22 @@ public class Player : MonoBehaviour
     private void Die()
     {
         PlayerStateMachine.SetState(PlayerDeadState);
-        PlayerStatictics.ShowGameOverPopUp(true);
     }
     private void InitStates()
     {
         PlayerDeadState = new DeadState(this, playerAnimator);
-        PlayerSlideState = new SlideState(this, PlayerCollider, playerAnimator);
-        PlayerGroundState = new GroundState(this, PlayerCollider, playerAnimator);
-        PlayerTurnState = new TurnState(this, PlayerCollider);
-        PlayerJumpState = new JumpState(this, PlayerCollider, jumpCurve, playerAnimator);
+        PlayerSlideState = new SlideState(this, PlayerController, playerAnimator);
+        PlayerGroundState = new GroundState(this, PlayerController, playerAnimator);
+        PlayerJumpState = new JumpState(this, PlayerController, jumpDeltaYCurve, playerAnimator);
+        PlayerStartingIdleState = new StartingIdleState(this, playerAnimator);
     }
-
+    
     public void RestartSession()
     {
-        PlayerStateMachine.SetState(PlayerGroundState);
-        transform.position = new Vector3(0, 0, 0);
-        PlayerStatictics.ShowGameOverPopUp(false);
+        PlayerStateMachine.SetState(PlayerStartingIdleState);
         PlayerStatictics.ResetToDefault();
         PlayerHealth.ResetToDefault();
+        LaneSystem.ResetToDefault();
+        Physics.SyncTransforms();
     }
-    //void HandleDirection()
-    //{
-    //    switch (Direction)
-    //    {
-    //        case EDirection.RIGHT:
-    //            LaneSystem.TargetLane++;
-    //            break;
-    //        case EDirection.LEFT:
-    //            LaneSystem.TargetLane--;
-    //            break;
-    //        case EDirection.UP:
-    //            PlayerStateMachine.SetState(PlayerJumpState);
-    //            break;
-    //        case EDirection.DOWN:
-    //            PlayerStateMachine.SetState(PlayerSlideState);
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //}
-    //PlayerCollisionHandler
-    //private void OnTriggerEnter(Collider other)
-    //   {      
-    //       if (other.TryGetComponent(out Obstacle obstacle))
-    //       {
-    //		if (IsInvincible)
-    //			return;
-    //           TakeDamage();
-    //           obstacle.Impact(); 
-    //		StartCoroutine(GrantInvincibility());
-    //       }
-    //       if (other.TryGetComponent(out Coin coin))
-    //       {
-    //           coin.gameObject.SetActive(false);
-    //       }
-    //   }
-
-    //   private void OnTriggerExit(Collider other)
-    //   {
-    //       if (other.TryGetComponent(out Chunk chunk))
-    //       {
-    //           //OnChunkExited.Invoke();
-    //       }
-    //   }
-
-    //   public void TakeDamage()
-    //{
-    //	Lives--;
-    //	if (Lives < 1)
-    //	{
-    //		StateMachine.SetState(PlayerDeadState);
-    //	}
-    //}
-    //public IEnumerator GrantInvincibility()
-    //{
-    //	IsInvincible = true;
-    //	yield return new WaitForSeconds(InvincibilityTime);
-    //       IsInvincible = false;
-    //}
 }

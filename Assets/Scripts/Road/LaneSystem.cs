@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaneSystem : MonoBehaviour
+public class LaneSystem : MonoBehaviour,IResettable
 {
     [SerializeField] private int laneCount;
     public List<int> Lanes { get; private set; }
-    public float TargetX { get; set; }
-    public bool isChangingLane { get; set; }
+    public float TargetPosition { get; private set; }
 
     [SerializeField] private float laneWidth;
     public float LaneWidth 
@@ -43,13 +42,12 @@ public class LaneSystem : MonoBehaviour
             }         
             if (value < targetLane)
             {
-                TargetX -= LaneWidth;
+                TargetPosition -= LaneWidth;
             }
             else 
             {
-                TargetX += LaneWidth;
+                TargetPosition += LaneWidth;
             }
-            isChangingLane = true;
             targetLane = value;
         }
     }
@@ -61,7 +59,20 @@ public class LaneSystem : MonoBehaviour
         {
             Lanes.Add(i);    
         }
-        targetLane = laneCount/2;
-        TargetX = 0;
+        ResetToDefault();
+    }
+    public bool IsOnTargetLane(float position)
+    {
+        return TargetPosition == position ? true : false;
+    }
+    public float CalculateDistanceToTargetLane(float position)
+    {
+        return TargetPosition - position;
+    }
+
+    public void ResetToDefault()
+    {
+        targetLane = laneCount / 2;
+        TargetPosition = 0;
     }
 }

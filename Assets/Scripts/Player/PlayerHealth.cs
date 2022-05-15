@@ -47,7 +47,7 @@ public class PlayerHealth : MonoBehaviour, IHealth, IResettable
             OnDied?.Invoke();
         }
     }
-    public void RestoreHealth()
+    public void Heal()
     {
         if (CurrentLives < MaxLives)
             CurrentLives++;
