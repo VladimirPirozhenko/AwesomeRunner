@@ -4,56 +4,67 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//ADD TURNS
-public class ChunkSpawner : MonoBehaviour
-{   
+//TODO: TURNS
+public enum EMovingDirection
+{
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST
+}
+public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
+{
     [SerializeField] public float ChunkWidth { get; private set; }
-    //[SerializeField] private Chunk chunkPrefab;
-    [SerializeField] [Range(5,100)] private int chunkCount;
+    [SerializeField] [Range(1, 100)] private int chunkCount;
 
     private ObjectPool<Chunk> chunkPool;
     [SerializeField] private float spawnDelay;
 
+    private Chunk firstChunk;
+    private Chunk lastChunk;
     private Vector3 firstChunkPosition;
     private Vector3 lastChunkPosition;
 
-    private Chunk firstChunk;
-    private Chunk lastChunk;
-    [SerializeField] private Obstacle obstaclePrefab;
-    [SerializeField] private LaneSystem LaneSystem;
-
     [SerializeField] private ChunkGenerator chunkGenerator;
+    private EMovingDirection spawnDirection;
+    private Vector3 newSpawnPosition;
+    //SEND DIRECTION AS AN ACTION?
+    Action<EMovingDirection> OnDirectionChanged;
+    WaitForSeconds waitCo;
 
-    private void Awake()
+    private void Start()
     {
-
-        chunkPool = new ObjectPool<Chunk>(chunkGenerator.Generate, ResetChunk, HideChunk, chunkCount); // MAKE INACTIVE AND SHOW ONLY HALF
-    }
-    void Start()
-    {  
-        Vector3 initialPosition = Vector3.zero;
-        BoxCollider previousCollider = chunkPool[0].Collider;
+        waitCo = new WaitForSeconds(spawnDelay);
+        chunkPool = new ObjectPool<Chunk>(CreateChunk, ResetChunk, HideChunk, chunkCount);
+        BoxCollider previousCollider = chunkPool[0].Collider; 
+        Vector3 previousPosition = Vector3.zero;
+        Chunk previousChunk = chunkPool[0];
         firstChunk = chunkPool[0];
+        lastChunk = chunkPool[0];
         firstChunkPosition = chunkPool[0].transform.position;
-        ChunkWidth = previousCollider.size.x;
-        for (int i = 0; i < chunkCount; i++)
+
+        for (int i = 0; i < chunkCount / 2; i++)
         {
-            chunkPool[i].transform.parent = this.transform;
-            if (i > chunkCount / 2)
-            {
-                chunkPool[i].gameObject.SetActive(false);
-            }
-            Vector3 newPosition = new Vector3(initialPosition.x, initialPosition.y, initialPosition.z + previousCollider.size.z);
-            chunkPool[i].transform.position = newPosition;
+            chunkPool[i].gameObject.SetActive(true);
+            Vector3 newPosition = new Vector3(previousPosition.x, previousPosition.y, previousPosition.z + previousCollider.size.z);
+            RotateChunk(chunkPool[i]);
             previousCollider = chunkPool[i].Collider;
-            initialPosition.z = newPosition.z;
-            if (chunkPool[i].gameObject.activeInHierarchy)
-            {
-                lastChunk = chunkPool[i];
-                lastChunkPosition = chunkPool[i].transform.position;
-            }
+            previousChunk = chunkPool[i];
+            previousPosition.z = newPosition.z;
+            lastChunk = chunkPool[i];
+            chunkPool[i].transform.position = lastChunkPosition + newSpawnPosition;
+            lastChunkPosition = chunkPool[i].transform.position;
         }
     }
+
+    private Chunk CreateChunk()
+	{
+		Chunk chunk = chunkGenerator.Generate();
+        chunk.Init(this);
+        chunk.transform.parent = this.transform;
+        chunk.gameObject.SetActive(false);
+        return chunk;
+	}
     private void ResetChunk(Chunk chunk)
     {
         chunk.ResetToDefault();
@@ -64,20 +75,90 @@ public class ChunkSpawner : MonoBehaviour
         chunk.gameObject.SetActive(false);
     }
 
-    public IEnumerator DelayedSpawn()
+    public IEnumerator DelayedSpawn(Chunk chunkToDespawn)
     {
         yield return new WaitForSeconds(spawnDelay);
-        Spawn();
+        InternalSpawn(chunkToDespawn);
     }
-    public void Spawn()
+    private void InternalSpawn(Chunk chunkToDespawn)
     {
-        firstChunkPosition.z += firstChunk.Collider.size.z;
-        Chunk firstChunkToRemove = chunkPool.TryGetFromPos(firstChunkPosition, true); 
-        bool isReturned = chunkPool.ReturnToPool(firstChunkToRemove);
-        //Debug.Log(isReturned);
+        bool isReturned = chunkPool.ReturnToPool(chunkToDespawn);
         Chunk newChunk = chunkPool.Get();
-        newChunk.transform.position = new Vector3(lastChunkPosition.x, lastChunkPosition.y, lastChunkPosition.z + lastChunk.Collider.size.z);
-        lastChunkPosition.z = newChunk.transform.position.z;
+        RotateChunk(newChunk);
+        newChunk.transform.position = lastChunkPosition + newSpawnPosition;
+
+        lastChunkPosition = newChunk.transform.position;
+        lastChunk = newChunk;
+    }
+    private void NextDirection(bool IsClockwise)
+    {
+        if (!IsClockwise)
+        {
+            switch (spawnDirection)
+            {
+                case EMovingDirection.NORTH:
+                    spawnDirection = EMovingDirection.WEST;
+                    break;
+                case EMovingDirection.SOUTH:
+                    spawnDirection = EMovingDirection.EAST;
+                    break;
+                case EMovingDirection.WEST:
+                    spawnDirection = EMovingDirection.SOUTH;
+                    break;
+                case EMovingDirection.EAST:
+                    spawnDirection = EMovingDirection.NORTH;
+                    break;
+            }
+        }
+        else
+        {
+            switch (spawnDirection)
+            {
+                case EMovingDirection.NORTH:
+                    spawnDirection = EMovingDirection.EAST;
+                    break;
+                case EMovingDirection.SOUTH:
+                    spawnDirection = EMovingDirection.WEST;
+                    break;
+                case EMovingDirection.WEST:
+                    spawnDirection = EMovingDirection.NORTH;
+                    break;
+                case EMovingDirection.EAST:
+                    spawnDirection = EMovingDirection.SOUTH;
+                    break;
+            }
+        }
+        OnDirectionChanged.Invoke(spawnDirection);
+    }
+    void RotateChunk(Chunk chunkToRotate)
+    {
+        switch (spawnDirection)
+        {
+            case EMovingDirection.NORTH:
+                newSpawnPosition = lastChunk.Collider.size.z * Vector3.forward;
+                Debug.Log("NORTH");
+                break;
+            case EMovingDirection.SOUTH:
+                chunkToRotate.transform.Rotate(0, -180, 0, Space.World);
+                Debug.Log("SOUTH -180");
+                newSpawnPosition = -lastChunk.Collider.size.z * Vector3.forward;
+                break;
+            case EMovingDirection.WEST:
+                chunkToRotate.transform.Rotate(0, -90, 0, Space.World);
+                Debug.Log("WEST -90");
+                newSpawnPosition = -lastChunk.Collider.size.x * Vector3.right;
+                break;
+            case EMovingDirection.EAST:
+                chunkToRotate.transform.Rotate(0, 90, 0, Space.World);
+                Debug.Log("EAST 90");
+                newSpawnPosition = lastChunk.Collider.size.x * Vector3.right;
+                break;
+        }
+        if (chunkToRotate.chunkType == EChunkType.LEFT_CHUNK)
+        {
+            NextDirection(false);
+            Debug.Log("CHANGING!");
+        }
     }
 }
 

@@ -9,21 +9,23 @@ public class JumpState : MovingState
     private PlayerAnimator animator;
     private float expiredTime = 0;
     private float previousDeltaY = 0;
-    private float jumpDuration = 1;
-    private float jumpHeight = 10;
-    public JumpState(Player player,CharacterController controller, AnimationCurve curve,PlayerAnimator animator) : base(player,controller)
+    //private float jumpDuration = 2f;
+    private float jumpHeight;
+    public JumpState(Player player, PlayerController collider, AnimationCurve curve,PlayerAnimator animator) : base(player,collider)
     {
         this.animator = animator;
         deltaYCurve = curve;
+        jumpHeight = player.PlayerData.JumpHeight;
     }
     public override void OnStateEnter()
     {
         animator.SetJumpState(true);
-    }
+}
 
     public override void OnStateExit()
     {
         animator.SetJumpState(false);
+        EndJump();
     }
     public override void Tick()
     { 
@@ -33,16 +35,23 @@ public class JumpState : MovingState
     public void Jump()
     {
         expiredTime += Time.deltaTime;
-        float jumpProgress = expiredTime / jumpDuration;
+        float jumpProgress = expiredTime;// / jumpDuration
         float deltaY = deltaYCurve.Evaluate(jumpProgress) * jumpHeight;
         float diff = deltaY - previousDeltaY;
         previousDeltaY = deltaY;
         player.VerticalDeltaPosition = diff;
-        if (jumpProgress > 0.5 && characterController.isGrounded)
+        float jumpTime = 0.5f;
+        if (jumpProgress > jumpTime)// && playerCollider.isGrounded)
         {
             expiredTime = 0;
             player.VerticalDeltaPosition = 0;
-            player.StateMachine.SetState(player.PlayerGroundState);
+            player.PlayerStateMachine.SetState(player.PlayerGroundState);
         }
+    }
+    private void EndJump()
+    {
+        previousDeltaY = 0;
+        expiredTime = 0;
+        player.VerticalDeltaPosition = 0;
     }
 }

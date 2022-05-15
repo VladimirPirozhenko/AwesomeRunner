@@ -2,22 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Renderer))]
 public class Coin : MonoBehaviour, ICollectable
 {
+    public Renderer Renderer { get; private set; }
+
+    private void Awake()
+    {
+        Renderer = GetComponent<Renderer>();  
+       
+    }
     public void Collect()
     {
-        throw new System.NotImplementedException();
+        gameObject.SetActive(false);
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

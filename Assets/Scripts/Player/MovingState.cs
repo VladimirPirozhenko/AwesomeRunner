@@ -5,15 +5,19 @@ using UnityEngine;
 
 public abstract class MovingState : State<Player>
 {
-    protected float speed = 15; //SO
+    private float speed; //SO
+    private float laneSwitchSpeed; //SO
     protected Player player;
-    protected CharacterController characterController;
+    protected PlayerController playerCollider;
     protected const float gravity = -9.8f;
 
-    public MovingState(Player player, CharacterController controller)
+    public bool canTurn = false;
+    public MovingState(Player player, PlayerController collider)
     {
         this.player = player;
-        characterController = controller;
+        speed = player.PlayerData.Speed;
+        laneSwitchSpeed = player.PlayerData.LaneSwitchSpeed;
+        playerCollider = collider;
     }
     public override void OnStateEnter(){}
 
@@ -23,26 +27,38 @@ public abstract class MovingState : State<Player>
     {
         HandleDirection(); 
         player.HorizontalDeltaPosition.z = speed * Time.deltaTime;
+        player.PlayerStatictics.IncreaseDistance(player.HorizontalDeltaPosition.z);
         if (player.LaneSystem.isChangingLane)
         {
             SwitchLane();
         }
-        HandleGravity();
+        ApplyGravity();
         Vector3 deltaPosition = new Vector3(player.HorizontalDeltaPosition.x,
                                             player.VerticalDeltaPosition, 
                                             player.HorizontalDeltaPosition.z);
-        characterController.Move(deltaPosition);
+       // Debug.Log("IsGrounded: " + characterController.isGrounded);
+        //Debug.Log("isChangingLane: " + player.LaneSystem.isChangingLane);
+        //Debug.Log("deltaPosition: " + deltaPosition);
+        playerCollider.Move(deltaPosition);
     }
-    public void HandleGravity()
+    public void ApplyGravity()
     {
-        if (characterController.isGrounded)
-        {
-            player.VerticalDeltaPosition = 0;
-        }
-        else
         {
             player.VerticalDeltaPosition += gravity * Time.deltaTime;
         }
+        //else
+        //{
+        //    player.VerticalDeltaPosition = 0;
+        //}
+        //if (player.PlayerStateMachine.CurrentState == player.PlayerGroundState ||
+        //    player.PlayerStateMachine.CurrentState == player.PlayerSlideState)//characterController.isGrounded
+        //{
+        //    player.VerticalDeltaPosition = 0;
+        //}
+        //else
+        //{
+        //    //player.VerticalDeltaPosition = 0;    
+        //}
     }
     private void HandleDirection()
     {
@@ -55,9 +71,10 @@ public abstract class MovingState : State<Player>
                 player.LaneSystem.TargetLane--;
                 break;
             case EDirection.UP:
-                player.StateMachine.SetState(player.PlayerJumpState);
+                player.PlayerStateMachine.SetState(player.PlayerJumpState);
                 break;
             case EDirection.DOWN:
+                player.PlayerStateMachine.SetState(player.PlayerSlideState);
                 break;
             default:
                 break;
@@ -72,7 +89,7 @@ public abstract class MovingState : State<Player>
             return;
         }
         Vector3 diffX = (player.LaneSystem.TargetX - player.transform.position.x) * Vector3.right;//player.TargetPosX
-        Vector3 deltaX = diffX.normalized * speed * Time.deltaTime;
+        Vector3 deltaX = diffX.normalized * laneSwitchSpeed * Time.deltaTime;
         //horizontalDeltaPosition.x = Mathf.Min(deltaX.sqrMagnitude, diffX.sqrMagnitude) * Mathf.Sign(diffX.x);
         //horizontalDeltaPosition.x = Mathf.Min(Mathf.Abs(deltaX + player.transform.position.x),
         //    Mathf.Abs(targetPos.x)) * Mathf.Sign(deltaX + player.transform.position.x)) // ¬ Õ”À≈ Õ≈ –¿¡Œ“¿≈“
@@ -86,4 +103,5 @@ public abstract class MovingState : State<Player>
             player.HorizontalDeltaPosition.x = diffX.x;
         }
     }
+
 }

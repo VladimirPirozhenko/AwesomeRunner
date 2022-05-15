@@ -5,7 +5,7 @@ using UnityEngine;
 public class GroundState : MovingState
 {
     private PlayerAnimator animator;
-    public GroundState(Player player,CharacterController controller, PlayerAnimator animator) : base(player,controller)
+    public GroundState(Player player,PlayerController collider, PlayerAnimator animator) : base(player,collider)
     {
         //this.player = player;
         this.animator = animator;

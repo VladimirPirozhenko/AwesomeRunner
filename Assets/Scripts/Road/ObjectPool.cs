@@ -6,7 +6,7 @@ using UnityEngine;
 //Передавать Action по добавлению и удалению из пула
 public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
 {
-    [SerializeField] public int Capacity { get; private set; }
+    public int Capacity { get; private set; }
     private Func<T> actionOnCreate;
     private Action<T> actionOnGet;
     private Action<T> actionOnRelease;
@@ -23,7 +23,6 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         for (uint i = 0; i < Capacity; i++)
         {
             var obj = actionOnCreate();
-            //var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
             pool.Add(obj);
         }
     }
@@ -77,26 +76,10 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         }
         element = null;
         return false;
-        //if (pool.Count > 0)
-        //{
-        //    foreach (var obj in pool)
-        //    {
-        //        if (!obj.gameObject.activeInHierarchy)
-        //        {
-        //            element = obj;
-        //            actionOnGet.Invoke(element);
-        //            return true;
-        //        }
-        //    }
-        //}
-        //element = null;
-        //return false;
     }
     public T ExpandPool()
     {
         var obj = actionOnCreate();
-        //var instance = UnityEngine.Object.Instantiate(obj, new Vector3(), new Quaternion());
-        //actionOnCreate.Invoke(obj);
         Capacity++;
         pool.Add(obj);
         return obj;

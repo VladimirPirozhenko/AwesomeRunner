@@ -5,22 +5,22 @@ using UnityEngine;
 public class DeadState : State<Player>
 {
     private Player player;
-    public DeadState(Player player) 
+    PlayerAnimator animator;
+    public DeadState(Player player, PlayerAnimator animator) 
     {
         this.player = player;
+        this.animator = animator;   
     }
     public override void OnStateEnter()
     {
-        Debug.Log("DEAD");
+        //Debug.Log("DEAD");
+        animator.SetDeadState(true);
+        //player.PlayerStatictics.ShowGameOverPopUp(true);
+       
     }
-
-    public  override void OnStateExit()
+    public override void OnStateExit()
     {
-        //throw new System.NotImplementedException();
+        animator.SetDeadState(false);
     }
-
-    public override void Tick()
-    {
-        
-    }
+    public override void Tick(){}
 }
