@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 public interface IChunkGenerationStrategy
 {
-    public void Generate();
+    public Chunk Generate(Chunk chunkToFill);
 }
 

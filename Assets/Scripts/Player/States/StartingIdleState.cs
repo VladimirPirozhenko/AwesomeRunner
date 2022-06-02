@@ -3,34 +3,27 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class StartingIdleState : State<Player>
+public class StartingIdleState : PlayerState
 {
-    private Player player;
-    private PlayerAnimator animator;
     private int countdownTime;
-    public StartingIdleState(Player player, PlayerAnimator animator)
-    {
-        this.player = player;
-        this.animator = animator;
-    }
+    public StartingIdleState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+    {}
     public override void OnStateEnter()
     {
-        animator.SetIdleState(true);
-        player.PlayerStatictics.ShowGameOverPopUp(false);
-        player.transform.position = new Vector3(0, 0, 0);
+        playerSM.PlayIdleAnimation(true);
+        //Session.SetPlayingState();
+        //Session.ShowGameOverPopUp(false);
+        playerTransform.position = new Vector3(0, 0, 20);
         countdownTime = 3;
         CountdownBeforeTheStart();
     }
     public override void OnStateExit()
     {
-        animator.SetIdleState(false);
-        player.HorizontalDeltaPosition = Vector3.zero;
-        player.VerticalDeltaPosition = 0f;
+        playerSM.PlayIdleAnimation(false);
+        HorizontalDeltaPosition = Vector3.zero;
+        VerticalDeltaPosition = 0f;
     }
-    public override void Tick()
-    {
-       
-    }
+    public override void Tick() {}
     public async void CountdownBeforeTheStart()
     {
         while (countdownTime > 0)
@@ -38,6 +31,6 @@ public class StartingIdleState : State<Player>
             countdownTime--;
             await Task.Delay(1000);
         }
-        player.PlayerStateMachine.SetState(player.PlayerGroundState);
+        playerSM.SetState(playerSM.PlayerGroundState);
     }
 }

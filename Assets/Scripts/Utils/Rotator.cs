@@ -25,10 +25,10 @@ public class Rotator : MonoBehaviour
         switch (direction)
         {
             case ERotationDirection.CLOCKWISE:
-                rotationDelta = Time.deltaTime * rotationSpeed;
+                rotationDelta = rotationSpeed * Time.deltaTime ;
                 break;
             case ERotationDirection.COUNTER_CLOCKWISE:
-                rotationDelta = -Time.deltaTime * rotationSpeed;
+                rotationDelta = rotationSpeed * -Time.deltaTime ;
                 break;
         }
         switch (axis)

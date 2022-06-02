@@ -1,24 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Renderer))]
+[RequireComponent(typeof(BoxCollider))]
 public class Coin : MonoBehaviour, ICollectable,IResettable
 {
+    [SerializeField] private int coinValue;
     public Renderer Renderer { get; private set; }
-
+    public BoxCollider Collider { get; private set; }
+    
+    public static event Action<int> OnCoinCollected;
+    public static event Action<Coin> OnCoinDissapeared;
     private void Awake()
     {
-        Renderer = GetComponent<Renderer>();  
-       
+        Renderer = GetComponent<Renderer>();
+        Collider = GetComponent<BoxCollider>();
     }
     public void Collect()
     {
         gameObject.SetActive(false);
+        OnCoinCollected?.Invoke(coinValue);
+        OnCoinDissapeared?.Invoke(this);
     }
-
     public void ResetToDefault()
     {
-        gameObject.SetActive(true);
+        //gameObject.transform.localRotation = Quaternion.identity;
+        //gameObject.transform.localScale = Vector3.one;  
+        //gameObject.transform.localPosition = Vector3.zero;
+        //gameObject.SetActive(true);
+       // gameObject.transform.SetParent(null);
     }
 }

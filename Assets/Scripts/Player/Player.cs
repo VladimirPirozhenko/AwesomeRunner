@@ -1,101 +1,145 @@
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
-//[RequireComponent(typeof(CharacterController))]
-//[RequireComponent(typeof(PlayerAnimator))]
-[RequireComponent(typeof(PlayerHealth))]
-[RequireComponent(typeof(PlayerStatistics))]
-[RequireComponent(typeof(PlayerController))]
-public class Player : MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Statistics))]
+[RequireComponent(typeof(WeaponController))] //NULL OBJECT PATTERN?
+[RequireComponent(typeof(RigController))]
+public class Player : MonoBehaviour, IResettable
 {
-
     #region StateMachine
-    public StateMachine<Player> PlayerStateMachine { get; private set; }
-    public DeadState PlayerDeadState { get; private set; } 
-    public JumpState PlayerJumpState { get; private set; }
-    public GroundState PlayerGroundState { get; private set; }
-    public SlideState PlayerSlideState { get; private set; }
-    public StartingIdleState PlayerStartingIdleState { get; private set; }
+    public PlayerStateMachine PlayerStateMachine { get; private set; }
     #endregion
-
     #region Animation
+    private Animator animator;
     [SerializeField] private AnimationCurve jumpDeltaYCurve;
-    private PlayerAnimator playerAnimator;   
+    public AnimationCurve JumpDeltaYCurve { get { return jumpDeltaYCurve; } }
+    public PlayerAnimator PlayerAnimator { get; private set; }  
     #endregion
-
     #region PlayerComponents
     [SerializeField] private PlayerData playerData;
-    public PlayerHealth PlayerHealth { get; private set; }
-    public PlayerController PlayerController { get; private set; }
-    public PlayerStatistics PlayerStatictics { get; private set; }
-    
+    public IDamageable PlayerHealth { get; private set; }
+    public Statistics PlayerStatictics { get; private set; }
+    public WeaponController PlayerWeaponController { get; private set; }
+    public RigController PlayerRigging { get; private set; }
     public PlayerData PlayerData { get { return playerData; } }
+   
     #endregion
-
     #region MovementControl
     private IPlayerInput input;                          
-    public EDirection? Direction { get; private set; }
-    [HideInInspector] public Vector3 HorizontalDeltaPosition;
-    public float VerticalDeltaPosition { get; set; }
+    public EInputDirection? InputDirection { get; private set; }
     [SerializeField] private LaneSystem laneSystem;
     public LaneSystem LaneSystem { get { return laneSystem; } private set { laneSystem = value; } }
+    public CharacterController CharacterController { get; private set; }
+    public PlayerCollider playerCollider { get; private set; }
     #endregion
-
-
+    public bool IsInvincible { get; private set; }
+    public float InvincibilityTime { get; private set; } //PLAYER DATA ScriptableObject
     private void Awake()
     {
-        input = new ArrowKeysInput();       
-        playerAnimator = new PlayerAnimator(GetComponent<Animator>());   
-        PlayerHealth = GetComponent<PlayerHealth>();
-        PlayerController = GetComponent<PlayerController>();
-        PlayerStatictics = GetComponent<PlayerStatistics>();
-        PlayerStateMachine = new StateMachine<Player>();
-        InitStates();
+        input = new ArrowKeysInput();
+        animator = GetComponent<Animator>();
+        if (animator)
+            PlayerAnimator = new PlayerAnimator(animator);
+        CharacterController = GetComponent<CharacterController>();
+        playerCollider = new PlayerCollider(CharacterController);   
+        PlayerHealth = GetComponent<IDamageable>();
+        PlayerStatictics = GetComponent<Statistics>();
+        PlayerWeaponController = GetComponent<WeaponController>();
+        PlayerRigging = GetComponent<RigController>();
+        PlayerStateMachine = new PlayerStateMachine(this);
+        InvincibilityTime = playerData.InvincibilityTime;
     }  
     private void OnEnable()
     {
-        PlayerHealth.OnDied += Die;
+        PlayerHealth.OnOutOfHealth += Die;
     }
     private void OnDisable()
     {
-        PlayerHealth.OnDied -= Die;
+        PlayerHealth.OnOutOfHealth -= Die;
     }
     private void Start()
     {
-        PlayerStateMachine.SetState(PlayerStartingIdleState);
+        PlayerStateMachine.SetState(PlayerStateMachine.PlayerStartingIdleState);
     }
     private void Update()
     {
-        Direction = input.ScanDirection();
+        //if (CurrentSession.IsSessionPaused())
+        //    return;
+        InputDirection = input.ScanDirection();
+        if (input.IsShooting())
+            PlayerWeaponController.PerfomShoot();
         PlayerStateMachine.Tick();   
     }
     private void FixedUpdate()
     {
         PlayerStateMachine.FixedTick();
     }
+
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.TryGetComponent(out IDamageDealer damageDealer)) //switch..case
+        {
+            if (IsInvincible)
+                return;
+            int damageAmount = 1;       
+            var damageableComponents = GetComponents<IDamageable>();
+            foreach (var component in damageableComponents)
+            {
+                damageDealer.DealDamage(component, damageAmount);
+            }
+            StartCoroutine(GrantInvincibility());
+        }
+        if (other.TryGetComponent(out IObstacle obstacle)) //switch..case
+        {
+            obstacle.Impact();
+        }
+        else if (other.TryGetComponent(out ICollectable collectable))
+        {
+            collectable.Collect();
+        }
+    }
+    //public void Move(Vector3 deltaPosition)
+    //{
+    //    CharacterController.Move(deltaPosition);
+    //}
     private void Die()
     {
-        PlayerStateMachine.SetState(PlayerDeadState);
+        PlayerStateMachine.SetState(PlayerStateMachine.PlayerDeadState);    
     }
-    private void InitStates()
+
+    public IEnumerator GrantInvincibility()
     {
-        PlayerDeadState = new DeadState(this, playerAnimator);
-        PlayerSlideState = new SlideState(this, PlayerController, playerAnimator);
-        PlayerGroundState = new GroundState(this, PlayerController, playerAnimator);
-        PlayerJumpState = new JumpState(this, PlayerController, jumpDeltaYCurve, playerAnimator);
-        PlayerStartingIdleState = new StartingIdleState(this, playerAnimator);
+        IsInvincible = true;
+        yield return new WaitForSeconds(InvincibilityTime);
+        IsInvincible = false;
     }
-    
-    public void RestartSession()
+    private void ReloadAnimator()
     {
-        PlayerStateMachine.SetState(PlayerStartingIdleState);
+        if (animator)
+            PlayerAnimator = new PlayerAnimator(animator);
+    }
+    public void ResetToDefault()
+    {
+        PlayerStateMachine.SetState(null);
         PlayerStatictics.ResetToDefault();
-        PlayerHealth.ResetToDefault();
         LaneSystem.ResetToDefault();
         Physics.SyncTransforms();
+        ReloadAnimator();
+    }
+    public void RestartSession()
+    { 
+        SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        ResetToDefault();
+    }
+    public void GoToMainMenu()
+    {     
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+        ResetToDefault();
     }
 }

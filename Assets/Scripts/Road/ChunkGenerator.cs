@@ -4,74 +4,77 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    [SerializeField] private List<Chunk> chunkPrefabs;
     [SerializeField] private Coin coinPrefab;
     [SerializeField] private Obstacle obstaclePrefab;
     [SerializeField] private LaneSystem LaneSystem;
 
+    public CoinPool CoinPool { get; private set; }
+    public ObstaclePool ObstaclePool { get; private set; }
+
     private Vector3 obstacleSize;
+    private Vector3 coinSize;
+
     private float coinElevation;
-    private int coinsOnLane = 5;
+    private  int coinsOnLane;
+    private int maxCoinsOnLane = 7;
     private void Awake()
     {
         obstacleSize = obstaclePrefab.GetComponent<BoxCollider>().size;
+        coinSize = coinPrefab.GetComponent<BoxCollider>().size;
+        CoinPool = GetComponent<CoinPool>();
+        ObstaclePool = GetComponent<ObstaclePool>();
+        CoinPool.CreateCoinPool(coinPrefab);
+        ObstaclePool.CreateObstaclePool(obstaclePrefab);
     }
-    public Chunk Generate()
+    public Chunk Generate(Chunk chunkToFill)
     {
-        int randomChunkPrefab = Random.Range(0, chunkPrefabs.Count);
-        Chunk chunk = Instantiate(chunkPrefabs[randomChunkPrefab], new Vector3(), new Quaternion());
-       // var values = Enum.GetValues(typeof(SomeEnum));
-       // SomeEnum randomValue = (SomeEnum)values[Random.Range(0, values.Length)];
-        Obstacle obstacle = Instantiate(obstaclePrefab, new Vector3(), new Quaternion());
+        //  int randomChunkPrefab = Random.Range(0, chunkPrefabs.Count);
+        //Chunk chunk = Instantiate(chunkPrefabs[randomChunkPrefab], new Vector3(), new Quaternion());
+        Obstacle obstacle = ObstaclePool.GetFromPool();//chunkToFill.ObstaclePool.Get();
+        obstacle.transform.rotation = Quaternion.identity;
         Vector3 obstaclePosition = Vector3.zero;
         int randomObstacleLane = Random.Range(-LaneSystem.Lanes.Count / 2, LaneSystem.Lanes.Count / 2 + 1);
         obstaclePosition.x = LaneSystem.LaneWidth * randomObstacleLane;
         obstaclePosition.y = 0;
-        obstaclePosition.z = 0;
-        obstacle.transform.position = chunk.transform.position + obstaclePosition;
-        obstacle.transform.SetParent(chunk.transform, false);
-        chunk.Obstacles.Add(obstacle);
-
+        obstaclePosition.z = obstacle.Collider.size.z;
+        obstacle.transform.position = chunkToFill.transform.position + obstaclePosition;
+        obstacle.transform.SetParent(chunkToFill.transform, true);        
         coinElevation = obstacle.Collider.size.y * 2;
-        coinsOnLane = Random.Range(0, 7);
+        obstacle.gameObject.SetActive(true);
         int randomCoinsLane = Random.Range(-LaneSystem.Lanes.Count / 2, LaneSystem.Lanes.Count / 2 + 1);
+        coinsOnLane = Random.Range(0, maxCoinsOnLane + 1);
+        chunkToFill.Obstacles.Add(obstacle);
         for (int i = 0; i < coinsOnLane; i++)
-        { 
-            Coin coin = Instantiate(coinPrefab, new Vector3(), new Quaternion());
+        {
+            Coin coin = CoinPool.GetFromPool();//chunkToFill.CoinPool.Get();
+            coin.transform.localPosition = Vector3.zero;
+            coin.transform.position = Vector3.zero;
+            coin.transform.rotation = Quaternion.identity;
             Vector3 coinPosition = Vector3.zero;
-            coinPosition.z = i * obstacleSize.z * 2;
+            coinPosition.z = 5;//i * 2;//coinSize.z * 20 * coin.transform.localScale.z; 
             coinPosition.x = LaneSystem.LaneWidth * randomCoinsLane;
-            if (randomCoinsLane == randomObstacleLane)
-            {
-                //y = Ax2 + Bx + C
-                //where x is the horizontal location of a given point, 
-                //y is the vertical location, 
-                //and A, B, and C are constants.A cannot be zero.
-   
+            //if (randomCoinsLane == randomObstacleLane)
+            //{
+            coinPosition.y = coinElevation;
+            //}
+            //else
+            //{
+            //    coinPosition.y = coin.Collider.size.y * coin.transform.localScale.y; //*scale
+            //}
+            //coin.gameObject.SetActive(true);
+            //coin.transform.position = Vector3.zero;
+            coin.transform.localPosition = coinPosition;
+            //coin.transform.position = chunkToFill.transform.position + coinPosition;//coinPosition;
+            //coin.transform.SetParent(chunkToFill.transform, true);
             
-                //coinPosition.y = 
-                coinPosition.y = coinElevation;
-            }
-            else
-            {
-                coinPosition.y = coin.Renderer.bounds.size.y;
-            }
-           
-            coin.transform.position = chunk.transform.position + coinPosition;
-            coin.transform.SetParent(chunk.transform, false);
-            chunk.Coins.Add(coin);
+            coin.transform.SetParent(chunkToFill.transform);
+            Debug.Log("CoinPosition: " + coin.transform.position);
+            chunkToFill.Coins.Add(coin);
         }
-        return chunk;
+        Debug.Log("ChunkPosition: " + chunkToFill.transform.position);
+        //Debug.LogError("Chunk: " + chunkToFill.gameObject.name + " " + chunkToFill.CoinPool.Capacity);   
+        return chunkToFill;
     }
-    //private List<Obstacle> GenerateObstacles(Chunk chunk)
-    //{
-    //    Obstacle obstacle = Instantiate(obstaclePrefab, new Vector3(), new Quaternion());
-    //    obstacle.transform.position = chunk.transform.position + obstaclePosition;
-    //    obstacle.transform.SetParent(chunk.transform, false);
-
-    //    return 
-    //}
-
     private void GenerateCoins()
     {
 

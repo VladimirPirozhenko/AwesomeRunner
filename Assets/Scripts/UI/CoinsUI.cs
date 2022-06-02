@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CoinsUI : TextUIElement
 {
-    [SerializeField] private PlayerStatistics playerStatistics;
+    [SerializeField] private Statistics playerStatistics; //Extended observer
     private void OnEnable()
     {
         playerStatistics.OnCoinCountChanged += UpdateCoinsText;

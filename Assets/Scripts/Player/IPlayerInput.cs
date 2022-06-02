@@ -1,6 +1,11 @@
 
-public enum EDirection { LEFT, RIGHT , UP ,DOWN };
+using System;
+
+public enum EInputDirection { LEFT, RIGHT , UP ,DOWN };
+
 public interface IPlayerInput 
 {
-    public EDirection? ScanDirection();
+    public EInputDirection? ScanDirection();
+    public bool IsShooting();
+   // void ActivateAbility();
 }

@@ -6,24 +6,25 @@ using UnityEngine;
 public class JumpState : MovingState
 {
     private AnimationCurve deltaYCurve;
-    private PlayerAnimator animator;
     private float expiredTime = 0;
     private float previousDeltaY = 0;
     private float jumpHeight;
-    public JumpState(Player player, PlayerController collider, AnimationCurve curve,PlayerAnimator animator) : base(player,collider)
+    private float internalJumpTime = 0.5f;
+    public JumpState(PlayerStateMachine playerStateMachine, AnimationCurve curve) : base(playerStateMachine)
     {
-        this.animator = animator;
         deltaYCurve = curve;
-        jumpHeight = player.PlayerData.JumpHeight;
+        jumpHeight = playerData.JumpHeight;
     }
     public override void OnStateEnter()
     {
-        animator.SetJumpState(true);
+        playerSM.PlayJumpingAnimation(true);
+        playerSM.ChangeRightHandRigWeight(from: playerSM.RightHandRigWeight, to: 0.85f,timeToChange: 0.1f);
     }
 
     public override void OnStateExit()
     {
-        animator.SetJumpState(false);
+        playerSM.PlayJumpingAnimation(false);      
+        playerSM.ChangeRightHandRigWeight(1);
         EndJump();
     }
     public override void Tick()
@@ -38,19 +39,18 @@ public class JumpState : MovingState
         float deltaY = deltaYCurve.Evaluate(jumpProgress) * jumpHeight;
         float diff = deltaY - previousDeltaY;
         previousDeltaY = deltaY;
-        player.VerticalDeltaPosition = diff;
-        float jumpTime = 0.5f;
-        if (jumpProgress > jumpTime)
+        VerticalDeltaPosition = diff;
+        if (jumpProgress > internalJumpTime)
         {
             expiredTime = 0;
-            player.VerticalDeltaPosition = 0;
-            player.PlayerStateMachine.SetState(player.PlayerGroundState);
+            VerticalDeltaPosition = 0;
+            playerSM.SetState(playerSM.PlayerGroundState);
         }
     }
     private void EndJump()
     {
         previousDeltaY = 0;
         expiredTime = 0;
-        player.VerticalDeltaPosition = 0;
+        VerticalDeltaPosition = 0;
     }
 }

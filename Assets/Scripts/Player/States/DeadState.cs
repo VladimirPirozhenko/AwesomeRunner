@@ -2,26 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeadState : State<Player>
+public class DeadState : PlayerState
 {
-    private Player player;
-    PlayerAnimator animator;
-    public DeadState(Player player, PlayerAnimator animator) 
-    {
-        this.player = player;
-        this.animator = animator;   
-    }
+    public DeadState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+    {}
     public override void OnStateEnter()
     {
-        animator.SetDeadState(true);
-        player.VerticalDeltaPosition = 0;
-        player.HorizontalDeltaPosition = Vector3.zero;
-        player.PlayerStatictics.ShowGameOverPopUp(true);
-
+        playerSM.PlayDeadAnimation(true);
+        VerticalDeltaPosition = 0;
+        HorizontalDeltaPosition = Vector3.zero;
+        //Session.ShowGameOverPopUp(true);
+        // Session.SetGameOverState();
+        // Stats.CalculateScore();
+        playerSM.ChangeRightHandRigWeight(0);
     }
     public override void OnStateExit()
     {
-        animator.SetDeadState(false);
+        playerSM.PlayDeadAnimation(false);
+        // Session.ShowGameOverPopUp(false);
+        playerSM.ChangeRightHandRigWeight(1);
     }
     public override void Tick(){}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DistanceUI : TextUIElement
 {
-    [SerializeField] private PlayerStatistics playerStatistics;
+    [SerializeField] private Statistics playerStatistics;
     private void OnEnable()
     {
         playerStatistics.OnDistanceChanged += UpdateDistanceText;
@@ -18,7 +18,8 @@ public class DistanceUI : TextUIElement
     private void UpdateDistanceText(float distance)
     {
         stringBuilder.Length = originalStringLength;
-        stringBuilder.Append(distance.ToString("F2"));
+        stringBuilder.Append(distance.ToString("F1"));
+        //textMeshUI.text = string.Format("Score: {0:00000}", distance);
         textMeshUI.text = stringBuilder.ToString();
     }
 

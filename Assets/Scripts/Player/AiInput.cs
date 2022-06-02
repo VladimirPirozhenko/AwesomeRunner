@@ -1,33 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AiInput : MonoBehaviour
+public class AiInput : IPlayerInput
 {
-    //public float Horizontal => throw new System.NotImplementedException();
+    public bool IsShooting()
+    {
+        throw new NotImplementedException();
+    }
 
-    //public float Vertical => throw new System.NotImplementedException();
+    public EInputDirection? ScanDirection()
+    {
+        throw new NotImplementedException();
+    }
 
-    //public EDirection Direction => throw new System.NotImplementedException();
-
-    //public void ReadInput()
+    //public bool ActivateAbility()
     //{
     //    throw new System.NotImplementedException();
     //}
 
-    //// Start is called before the first frame update
-    //void Start()
+    //public EInputDirection? ScanDirection()
     //{
-
+    //    throw new System.NotImplementedException();
     //}
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //}
-   // public EDirection? ScanDirection()
-   // {
-        //throw new System.NotImplementedException();
-   // }
 }

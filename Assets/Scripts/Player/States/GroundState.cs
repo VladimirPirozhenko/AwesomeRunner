@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class GroundState : MovingState
 {
-    private PlayerAnimator animator;
-    public GroundState(Player player,PlayerController collider, PlayerAnimator animator) : base(player,collider)
-    {
-        this.animator = animator;
-    }
+    public GroundState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+    {}
     public override void OnStateEnter()
     {
-        animator.SetRunState(true);
+        playerSM.PlayRunningAnimation(true);
     }
 
     public override void OnStateExit()
     {
-        animator.SetRunState(false);
+        playerSM.PlayRunningAnimation(false);
     }
 
     public override void Tick()

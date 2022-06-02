@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ScoreUI : TextUIElement
 {
-    [SerializeField] private PlayerStatistics playerStatistics;
+    [SerializeField] private Statistics playerStatistics;
     private int scoreIncrement = 0;
     private void OnEnable()
     {

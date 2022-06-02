@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkGenerationFromPrefab : IChunkGenerationStrategy
+public class ChunkGenerationFromPrefab //: IChunkGenerationStrategy
 {
     public void Generate()
     {

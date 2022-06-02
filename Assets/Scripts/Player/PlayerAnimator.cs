@@ -11,28 +11,29 @@ public class PlayerAnimator
     private string slideAnimStr = "Slide";
     private string idleAnimStr = "Idle";
 
-    public PlayerAnimator(Animator playerAnimator)
+    public PlayerAnimator(Animator animator)
     {
-        this.animator = playerAnimator;
+        if (animator)
+            this.animator = animator;
     }
     public void SetRunState(bool isRunning)
     {
-        animator.SetBool(runningAnimStr, isRunning);
+        animator?.SetBool(runningAnimStr, isRunning);
     }
     public void SetJumpState(bool isJumping)
     {
-        animator.SetBool(jumpAnimStr, isJumping);
+        animator?.SetBool(jumpAnimStr, isJumping);
     }
     public void SetDeadState(bool isDead)
     {
-        animator.SetBool(deadAnimStr, isDead);
+        animator?.SetBool(deadAnimStr, isDead);
     }
     public void SetSlideState(bool isSliding)
     {
-        animator.SetBool(slideAnimStr, isSliding);
+        animator?.SetBool(slideAnimStr, isSliding);
     }
     public void SetIdleState(bool isIdle)
     {
-        animator.SetBool(idleAnimStr, isIdle);
+        animator?.SetBool(idleAnimStr, isIdle);
     }
 }

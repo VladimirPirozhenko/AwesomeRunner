@@ -12,6 +12,7 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
     private Action<T> actionOnRelease;
 
     private List<T> pool;
+    private List<T> inactiveElements;
     public ObjectPool(Func<T> actionOnCreate, Action<T> actionOnGet, Action<T> actionOnRelease, int initialCapacity)
     {
         Capacity = initialCapacity;
@@ -66,8 +67,8 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
     }
     private bool TryGet(out T element)
     {
-        List<T> inactiveObjects = pool.FindAll(obj => !obj.gameObject.activeInHierarchy);
-        if (pool.Count > 0)
+        List<T> inactiveObjects = GetInactiveElements();
+        if (inactiveObjects.Count > 0)
         {
             var obj = inactiveObjects[UnityEngine.Random.Range(0, inactiveObjects.Count)];
             element = obj;
@@ -77,6 +78,14 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         element = null;
         return false;
     }
+    public List<T> GetInactiveElements()
+    {
+        return pool.FindAll(obj => !obj.gameObject.activeInHierarchy);
+    }
+    public List<T> GetActiveElements()
+    {
+        return pool.FindAll(obj => obj.gameObject.activeInHierarchy);
+    }
     public T ExpandPool()
     {
         var obj = actionOnCreate();
@@ -84,16 +93,15 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         pool.Add(obj);
         return obj;
     }
-    public bool ReturnToPool(T obj)
+    public void ReturnToPool(T obj)
     {
         if (obj == null)
-            return false;
+            return;
         if (obj.gameObject.activeInHierarchy)
         {
             actionOnRelease.Invoke(obj);
-            return true;
         }
-        return false;
+        return;
     }
     public IEnumerator<T> GetEnumerator()
     {

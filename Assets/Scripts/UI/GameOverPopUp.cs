@@ -5,10 +5,8 @@ using UnityEngine.UI;
 
 public class GameOverPopUp : MonoBehaviour
 {
-    Button restartButton;
-    private void Awake()
+    public void Show(bool isVisible)
     {
-        restartButton = GetComponent<Button>();
+        this.gameObject.SetActive(isVisible);
     }
-    
 }

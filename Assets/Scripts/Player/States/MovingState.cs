@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class MovingState : State<Player>
+public abstract class MovingState : PlayerState
 {
     private float speed; //SO
     private float laneSwitchSpeed; //SO
-    protected Player player;
-    protected PlayerController playerController;
     protected const float gravity = -9.8f;
-
-    public MovingState(Player player, PlayerController controller)
+    private float invincibilityTime => playerSM.PlayerData.InvincibilityTime; 
+    public MovingState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)//, PlayerController controller
     {
-        this.player = player;
-        speed = player.PlayerData.Speed;
-        laneSwitchSpeed = player.PlayerData.LaneSwitchSpeed;
-        playerController = controller;
+        this.playerSM = playerStateMachine;
+        speed = playerData.Speed;
+        laneSwitchSpeed = playerData.LaneSwitchSpeed;
     }
     public override void OnStateEnter(){}
 
@@ -25,34 +22,34 @@ public abstract class MovingState : State<Player>
     public override void Tick()
     {
         HandleDirection(); 
-        player.HorizontalDeltaPosition.z = speed * Time.deltaTime;
-        player.PlayerStatictics.IncreaseDistance(player.HorizontalDeltaPosition.z);
+        HorizontalDeltaPosition.z = speed * Time.deltaTime; //INCAPSULATE
+        playerSM.UpdateDistance(HorizontalDeltaPosition.z); //вынести в контроллер
         SwitchLane();
         ApplyGravity();
-        Vector3 deltaPosition = new Vector3(player.HorizontalDeltaPosition.x,
-                                            player.VerticalDeltaPosition, 
-                                            player.HorizontalDeltaPosition.z);
-        playerController.Move(deltaPosition);
+        Vector3 deltaPosition = new Vector3(HorizontalDeltaPosition.x,
+                                            VerticalDeltaPosition,
+                                            HorizontalDeltaPosition.z);
+        playerSM.Move(deltaPosition);
     }
     public void ApplyGravity()
     {   
-        player.VerticalDeltaPosition += gravity * Time.deltaTime;
+        VerticalDeltaPosition += gravity * Time.deltaTime;
     }
     private void HandleDirection()
     {
-        switch (player.Direction)
+        switch (playerSM.InputDirection)
         {
-            case EDirection.RIGHT:
-                player.LaneSystem.TargetLane++;
+            case EInputDirection.RIGHT:
+                playerSM.IncreaseTargetLane();
                 break;
-            case EDirection.LEFT:
-                player.LaneSystem.TargetLane--;
+            case EInputDirection.LEFT:
+                playerSM.DecreaseTargetLane();
                 break;
-            case EDirection.UP:
-                player.PlayerStateMachine.SetState(player.PlayerJumpState);
+            case EInputDirection.UP:
+                playerSM.SetState(playerSM.PlayerJumpState);
                 break;
-            case EDirection.DOWN:
-                player.PlayerStateMachine.SetState(player.PlayerSlideState);
+            case EInputDirection.DOWN:
+                playerSM.SetState(playerSM.PlayerSlideState);
                 break;
             default:
                 break;
@@ -61,20 +58,20 @@ public abstract class MovingState : State<Player>
 
     public void SwitchLane()
     {
-        if (player.LaneSystem.IsOnTargetLane(player.transform.position.x))
+        if (playerSM.IsOnTargetLane(playerTransform.position.x))
         {
-            player.HorizontalDeltaPosition.x = 0;
+            HorizontalDeltaPosition.x = 0;
             return;
         }
-        Vector3 diffX = player.LaneSystem.CalculateDistanceToTargetLane(player.transform.position.x)* Vector3.right;
+        Vector3 diffX = playerSM.CalculateDistanceToTargetLane();
         Vector3 deltaX = diffX.normalized * laneSwitchSpeed * Time.deltaTime;
         if (deltaX.sqrMagnitude < diffX.sqrMagnitude)
         {
-            player.HorizontalDeltaPosition.x = deltaX.x;
+            HorizontalDeltaPosition.x = deltaX.x;
         }
         else
         {
-            player.HorizontalDeltaPosition.x = diffX.x;
+            HorizontalDeltaPosition.x = diffX.x;
         }
     }
 

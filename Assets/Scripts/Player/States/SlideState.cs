@@ -4,25 +4,27 @@ using UnityEngine;
 
 public class SlideState : MovingState
 {
-    private PlayerAnimator animator;
     private float expiredTime = 0;
     private float slideDuration = 1;
-    public SlideState(Player player, PlayerController collider,PlayerAnimator animator) : base(player, collider)
-    {
-        this.animator = animator;
-    }
+    public SlideState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+    {}
     public override void OnStateEnter()
     {
-        animator.SetSlideState(true);
-        player.PlayerController.ChangeColliderCenter(player.PlayerController.defaultCenter / 2);
-        player.PlayerController.ChangeColliderHeight(player.PlayerController.defaultHeight / 2);
+        playerSM.SetAnimatorSlideState(true);
+        playerSM.ChangeColliderCenter(playerSM.DefaultColliderCenter / 2);
+        playerSM.ChangeColliderHeight(playerSM.DefaultColliderHeight / 2);
+        playerSM.ChangeRightHandRigWeight(0);
+        //WeaponController.canShoot = false;
     }
     public override void OnStateExit()
     {
-        player.VerticalDeltaPosition = 0;
+        playerSM.SetAnimatorSlideState(false);
+        VerticalDeltaPosition = 0;
         expiredTime = 0;
-        player.PlayerController.ResetToDefault();
-        animator.SetSlideState(false);
+        playerSM.ResetColliderToDefault();
+       // WeaponController.canShoot = true;
+        playerSM.ChangeRightHandRigWeight(1);
+
     }
     public override void Tick()
     { 
@@ -33,10 +35,10 @@ public class SlideState : MovingState
     {
         expiredTime += Time.deltaTime;
         float slideProgress = expiredTime / slideDuration;
-        if (slideProgress > 1)
+        if (slideProgress > slideDuration)
         {
             expiredTime = 0;
-            player.PlayerStateMachine.SetState(player.PlayerGroundState);
+            playerSM.SetState(playerSM.PlayerGroundState);
         }
     }
 }

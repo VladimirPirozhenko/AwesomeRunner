@@ -3,50 +3,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerHealth))]
+[RequireComponent(typeof(Health))]
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour, IResettable
 {
-   // [SerializeField] private ChunkSpawner spawner; 
-    private PlayerHealth playerHealth;
-    private PlayerStatistics playerStatistics;
+    [SerializeField] private ChunkSpawner spawner; 
+    private Health playerHealth;
+    private Statistics playerStatistics;
     public CharacterController CharacterController { get; private set; }
     public float defaultHeight { get; private set; }
     public Vector3 defaultCenter { get; private set; }
     public bool isGrounded => CharacterController.isGrounded;
     private void Start()
     {
-        playerHealth = GetComponent<PlayerHealth>();
-        playerStatistics = GetComponent<PlayerStatistics>();
+        playerHealth = GetComponent<Health>();
+        playerStatistics = GetComponent<Statistics>();
         CharacterController = GetComponent<CharacterController>();
         defaultHeight = CharacterController.height;
         defaultCenter = CharacterController.center;
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) //CollisionCheck
     {
-        if (other.TryGetComponent(out Obstacle obstacle))
+
+        if (other.TryGetComponent(out Obstacle obstacle)) //switch..case
         {
+
+            var damageableComponents = GetComponents<IDamageDealer>();
             if (playerHealth.IsInvincible)
                 return;
-            playerHealth.TakeDamage();
+            int damageAmount = 1; 
+            playerHealth.TakeDamage(damageAmount);
             obstacle.Impact();
             StartCoroutine(playerHealth.GrantInvincibility());
+            
         }
-        if (other.TryGetComponent(out Coin coin))
+        else if (other.TryGetComponent(out Coin coin))
         {
-            playerStatistics.IncreaseCoinCount();   
+            //playerStatistics.UpdateCoinCount();   
             coin.Collect();
         }     
     }
 
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.TryGetComponent(out Chunk chunk))
-    //    {
-    //        spawner.DelayedSpawn(chunk);
-    //    }
-    //}
-    
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent(out Chunk chunk))
+        {
+            //StartCoroutine(spawner.Spawn(chunk)); //EVENT
+        }
+    }
+
     public void Move(Vector3 deltaPosition)
     {
         CharacterController.Move(deltaPosition);
