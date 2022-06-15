@@ -23,6 +23,6 @@ public class FollowingCamera : MonoBehaviour
         Vector3 toPos = target.position + (target.rotation * defaultDistance);
         Vector3 curPos = Vector3.SmoothDamp(camTransform.position, toPos, ref velocity, distanceDamp);
         camTransform.position = curPos;
-        //camTransform.LookAt(target, target.up);
+        camTransform.LookAt(target, target.up);
     }
 }

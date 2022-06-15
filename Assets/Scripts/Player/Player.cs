@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Health))]
@@ -37,9 +36,13 @@ public class Player : MonoBehaviour, IResettable
     public LaneSystem LaneSystem { get { return laneSystem; } private set { laneSystem = value; } }
     public CharacterController CharacterController { get; private set; }
     public PlayerCollider playerCollider { get; private set; }
+    //public bool IsTurned { get; private set; }
     #endregion
     public bool IsInvincible { get; private set; }
     public float InvincibilityTime { get; private set; } //PLAYER DATA ScriptableObject
+    public EDirection Direction { get; private set; }
+    public EDirection PendingDirection { get; private set; }
+    public bool IsTurning { get;  set; }
     private void Awake()
     {
         input = new ArrowKeysInput();
@@ -66,6 +69,8 @@ public class Player : MonoBehaviour, IResettable
     private void Start()
     {
         PlayerStateMachine.SetState(PlayerStateMachine.PlayerStartingIdleState);
+        //IsTurned = false;
+        IsTurning = false;
     }
     private void Update()
     {
@@ -74,15 +79,79 @@ public class Player : MonoBehaviour, IResettable
         InputDirection = input.ScanDirection();
         if (input.IsShooting())
             PlayerWeaponController.PerfomShoot();
+        if (IsTurning)
+        {
+            if (InputDirection == EInputDirection.LEFT)
+            {
+                transform.Rotate(0, -90, 0, Space.Self);
+                Direction = PendingDirection;
+                LaneSystem.AdditionalOffset = PendingAdditionalOffset;
+                LaneSystem.TargetPosition = LaneSystem.AdditionalOffset + LaneSystem.CurrentOffset;
+                Debug.Log(Direction);
+                Debug.Log(LaneSystem.TargetLane);
+                //IsTurning = false;
+            }
+            if (InputDirection == EInputDirection.RIGHT)
+            {
+                transform.Rotate(0, 90, 0, Space.Self);
+                Direction = PendingDirection;
+                LaneSystem.AdditionalOffset = PendingAdditionalOffset;
+                LaneSystem.TargetPosition = LaneSystem.AdditionalOffset + LaneSystem.CurrentOffset; ;
+                Debug.Log(Direction);
+                Debug.Log(LaneSystem.TargetLane);
+                //IsTurning = false;
+            }
+    }
         PlayerStateMachine.Tick();   
     }
     private void FixedUpdate()
     {
         PlayerStateMachine.FixedTick();
     }
-
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.TryGetComponent(out TurningChunk chunk)) //switch..case
+    //    {
+    //        if (Input.GetKeyDown(KeyCode.LeftArrow))
+    //        {
+    //            if (Direction == chunk.Direction)
+    //                return;
+    //            Direction = chunk.Direction;
+    //            if (chunk.IsClockwise)
+    //            {
+    //                transform.Rotate(0, 90, 0, Space.Self);
+    //                LaneSystem.TargetLane = 0;
+    //            }
+    //            else
+    //            {
+    //                transform.Rotate(0, -90, 0, Space.Self);
+    //                LaneSystem.TargetLane = 0;
+    //            }
+    //        }
+    //    }
+    //}
+    public Vector3 startPoint = Vector3.zero;
+    public Vector3 endPoint = Vector3.zero; 
+    public float PendingAdditionalOffset { get; private set; }
     private void OnTriggerEnter(Collider other) 
     {
+        if (other.TryGetComponent(out TurningChunk chunk)) //switch..case
+        {
+            IsTurning = true;
+            startPoint = chunk.Begin.transform.position;
+            endPoint = chunk.End.transform.position;
+            PendingDirection = chunk.Direction;
+            if (chunk.Direction == EDirection.NORTH || chunk.Direction == EDirection.SOUTH)
+            {
+                PendingAdditionalOffset = chunk.End.transform.position.x;
+                Debug.Log(PendingAdditionalOffset);
+            }
+            else
+            {
+                PendingAdditionalOffset = chunk.End.transform.position.z;
+                Debug.Log(PendingAdditionalOffset);
+            }
+        }
         if (other.TryGetComponent(out IDamageDealer damageDealer)) //switch..case
         {
             if (IsInvincible)
@@ -104,10 +173,15 @@ public class Player : MonoBehaviour, IResettable
             collectable.Collect();
         }
     }
-    //public void Move(Vector3 deltaPosition)
-    //{
-    //    CharacterController.Move(deltaPosition);
-    //}
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent(out TurningChunk chunk)) //switch..case
+        {
+            IsTurning = false;
+
+        }
+    }
+
     private void Die()
     {
         PlayerStateMachine.SetState(PlayerStateMachine.PlayerDeadState);    

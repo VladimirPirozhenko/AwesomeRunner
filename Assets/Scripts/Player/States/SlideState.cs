@@ -13,17 +13,17 @@ public class SlideState : MovingState
         playerSM.SetAnimatorSlideState(true);
         playerSM.ChangeColliderCenter(playerSM.DefaultColliderCenter / 2);
         playerSM.ChangeColliderHeight(playerSM.DefaultColliderHeight / 2);
-        playerSM.ChangeRightHandRigWeight(0);
+        playerSM.ChangeRigWeight(playerSM.RightHandRig,0);
         //WeaponController.canShoot = false;
     }
     public override void OnStateExit()
     {
         playerSM.SetAnimatorSlideState(false);
-        VerticalDeltaPosition = 0;
+        playerSM.VerticalDeltaPosition = 0;
         expiredTime = 0;
         playerSM.ResetColliderToDefault();
        // WeaponController.canShoot = true;
-        playerSM.ChangeRightHandRigWeight(1);
+        playerSM.ChangeRigWeight(playerSM.RightHandRig,1);
 
     }
     public override void Tick()

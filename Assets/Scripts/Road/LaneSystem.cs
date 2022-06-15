@@ -6,7 +6,12 @@ public class LaneSystem : MonoBehaviour,IResettable
 {
     [SerializeField] private int laneCount;
     public List<int> Lanes { get; private set; }
-    public float TargetPosition { get; private set; }
+    public float CurrentPosition { get; private set; }
+    public Transform TargetTransform;
+    public float TargetPosition { get;  set; }
+    public float AdditionalOffset { get;  set; }
+    public float CurrentOffset { get; private set; }    
+    public float DesiredDifference { get;  set; }
 
     [SerializeField] private float laneWidth;
     public float LaneWidth 
@@ -42,11 +47,17 @@ public class LaneSystem : MonoBehaviour,IResettable
             }         
             if (value < targetLane)
             {
-                TargetPosition -= LaneWidth;
+
+                TargetPosition -= LaneWidth ;
+                CurrentOffset -= laneWidth;
+                // DesiredDifference = -LaneWidth;
             }
             else 
             {
-                TargetPosition += LaneWidth;
+                
+                TargetPosition += LaneWidth; //+ AdditionalOffset;
+                CurrentOffset += laneWidth;
+               // DesiredDifference = LaneWidth;
             }
             targetLane = value;
         }
@@ -73,6 +84,8 @@ public class LaneSystem : MonoBehaviour,IResettable
     public void ResetToDefault()
     {
         targetLane = laneCount / 2;
-        TargetPosition = 0;
+        AdditionalOffset = 0;
+        CurrentOffset = 0;
+        TargetPosition = AdditionalOffset;
     }
 }

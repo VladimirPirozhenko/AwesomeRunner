@@ -23,7 +23,7 @@ public class ObstaclePool : MonoBehaviour
             obstacle.transform.SetParent(gameObject.transform, false);
             obstacle.gameObject.SetActive(false);
         };
-        pool = new ObjectPool<Obstacle>(createObstacle, getObstacle, releaseObstacle, 5);
+        pool = new ObjectPool<Obstacle>(createObstacle, getObstacle, releaseObstacle,100);
     }
     public Obstacle GetFromPool()
     {

@@ -11,12 +11,12 @@ public class RigController : MonoBehaviour
     //{
     //    RightHandRig.ChangeWeightOverTime(from, to, timeToChange);//rightHandRig.Weight
     //}
-    public void ChangeRightHandIKWeight(float from, float to, float timeToChange) //!!!!Rig rigToChange,
+    public void ChangeRigWeight(Rig rig,float from, float to, float timeToChange) //!!!!Rig rigToChange,
     {
-        rightHandRig.ChangeWeightOverTime(from, to, timeToChange);
+        rig.ChangeWeightOverTime(from, to, timeToChange);
     }
-    public void ChangeRightHandIKWeight(float to)
+    public void ChangeRigWeight(Rig rig,float to)
     {
-        rightHandRig.weight = to;
+        rig.weight = to;
     }
 }

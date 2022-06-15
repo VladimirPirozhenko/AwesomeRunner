@@ -9,18 +9,18 @@ public class DeadState : PlayerState
     public override void OnStateEnter()
     {
         playerSM.PlayDeadAnimation(true);
-        VerticalDeltaPosition = 0;
-        HorizontalDeltaPosition = Vector3.zero;
+        playerSM.VerticalDeltaPosition = 0;
+        playerSM.HorizontalDeltaPosition = Vector3.zero;
         //Session.ShowGameOverPopUp(true);
         // Session.SetGameOverState();
         // Stats.CalculateScore();
-        playerSM.ChangeRightHandRigWeight(0);
+        playerSM.ChangeRigWeight(playerSM.RightHandRig,0);
     }
     public override void OnStateExit()
     {
         playerSM.PlayDeadAnimation(false);
         // Session.ShowGameOverPopUp(false);
-        playerSM.ChangeRightHandRigWeight(1);
+        playerSM.ChangeRigWeight(playerSM.RightHandRig,1);
     }
     public override void Tick(){}
 }

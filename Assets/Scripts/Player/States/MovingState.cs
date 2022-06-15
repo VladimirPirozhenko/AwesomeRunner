@@ -1,4 +1,4 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -21,19 +21,20 @@ public abstract class MovingState : PlayerState
 
     public override void Tick()
     {
-        HandleDirection(); 
-        HorizontalDeltaPosition.z = speed * Time.deltaTime; //INCAPSULATE
-        playerSM.UpdateDistance(HorizontalDeltaPosition.z); //вынести в контроллер
+        HandleDirection();
+        playerSM.HorizontalDeltaPosition = speed * playerSM.forwardDirection * Time.deltaTime ;
+        playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.forward * speed * Time.deltaTime; //INCAPSULATE
+        playerSM.UpdateDistance(playerSM.HorizontalDeltaPosition.z); //РІС‹РЅРµСЃС‚Рё РІ РєРѕРЅС‚СЂРѕР»Р»РµСЂ
         SwitchLane();
         ApplyGravity();
-        Vector3 deltaPosition = new Vector3(HorizontalDeltaPosition.x,
-                                            VerticalDeltaPosition,
-                                            HorizontalDeltaPosition.z);
+        Vector3 deltaPosition = new Vector3(playerSM.HorizontalDeltaPosition.x,
+                                            playerSM.VerticalDeltaPosition,
+                                            playerSM.HorizontalDeltaPosition.z);
         playerSM.Move(deltaPosition);
     }
     public void ApplyGravity()
-    {   
-        VerticalDeltaPosition += gravity * Time.deltaTime;
+    {
+        playerSM.VerticalDeltaPosition += gravity * Time.deltaTime;
     }
     private void HandleDirection()
     {
@@ -58,21 +59,142 @@ public abstract class MovingState : PlayerState
 
     public void SwitchLane()
     {
-        if (playerSM.IsOnTargetLane(playerTransform.position.x))
+        //playerSM.HorizontalDeltaPosition = playerSM.PlayerTransform.forward * speed * Time.deltaTime; //INCAPSULATE
+        float sidewaysPos = 0;
+        Vector3 multiplierVector = Vector3.zero;    
+        if (playerSM.Direction == EDirection.NORTH)
         {
-            HorizontalDeltaPosition.x = 0;
+            sidewaysPos = playerTransform.localPosition.x;
+            multiplierVector = Vector3.right;
+        }
+        if (playerSM.Direction == EDirection.SOUTH)
+        {
+            sidewaysPos = playerTransform.localPosition.x;
+            multiplierVector = Vector3.left;
+        }
+        if (playerSM.Direction == EDirection.EAST)
+        {
+            sidewaysPos = playerTransform.localPosition.z;
+            multiplierVector = Vector3.back;
+        }
+        if (playerSM.Direction == EDirection.WEST)
+        {
+            sidewaysPos = playerTransform.localPosition.z;
+            multiplierVector = Vector3.forward;
+        }
+
+        float targetPos = playerSM.TargetLanePosition;
+        if (playerSM.IsOnTargetLane(sidewaysPos))
+        {
+            playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * 0;
             return;
         }
-        Vector3 diffX = playerSM.CalculateDistanceToTargetLane();
+        //Vector3 diffX = playerSM.CalculateDistanceToTargetLane(sidewaysPos);
+        float desiredPosition =  playerSM.DesiredDifference + sidewaysPos;
+        Vector3 diffX = (targetPos - sidewaysPos) * multiplierVector;
         Vector3 deltaX = diffX.normalized * laneSwitchSpeed * Time.deltaTime;
         if (deltaX.sqrMagnitude < diffX.sqrMagnitude)
         {
-            HorizontalDeltaPosition.x = deltaX.x;
+            if (playerSM.Direction == EDirection.NORTH || playerSM.Direction == EDirection.SOUTH)
+            {
+                playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * deltaX.x;
+            }
+            else
+            {
+                playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * deltaX.z;
+            }
         }
         else
         {
-            HorizontalDeltaPosition.x = diffX.x;
+            if (playerSM.Direction == EDirection.NORTH || playerSM.Direction == EDirection.SOUTH)
+            {
+                playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * diffX.x;
+            }
+            else
+            {
+                playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * diffX.z;
+            }
         }
     }
 
 }
+////playerSM.HorizontalDeltaPosition = playerSM.PlayerTransform.forward * speed * Time.deltaTime; //INCAPSULATE
+//float sidewaysPos = 0;
+//Vector3 multiplierVector = Vector3.zero;
+//if (playerSM.Direction == EDirection.NORTH || playerSM.Direction == EDirection.SOUTH)
+//{
+//    sidewaysPos = playerTransform.localPosition.x;
+//    playerSM.HorizontalDeltaPosition.x = 0;
+//    multiplierVector = Vector3.right;
+//}
+//else
+//{
+//    sidewaysPos = playerTransform.localPosition.z;
+//    playerSM.HorizontalDeltaPosition.z = 0;
+//    multiplierVector = Vector3.forward;
+//}
+//float targetPos = sidewaysPos + playerSM.TargetLanePosition;
+//// if (playerSM.IsOnTargetLane(sidewaysPos))
+//if (targetPos == sidewaysPos)
+//{
+//    // playerSM.HorizontalDeltaPosition = playerSM.PlayerTransform.right * 0;
+//    return;
+//}
+////Vector3 diffX = playerSM.CalculateDistanceToTargetLane(sidewaysPos);
+////float desiredPosition =  playerSM.DesiredDifference + sidewaysPos;
+//Vector3 diffX = (playerSM.DesiredDifference - sidewaysPos) * multiplierVector;
+//Vector3 deltaX = diffX.normalized * laneSwitchSpeed * Time.deltaTime;
+//if (deltaX.sqrMagnitude < diffX.sqrMagnitude)
+//{
+//    if (playerSM.Direction == EDirection.NORTH || playerSM.Direction == EDirection.SOUTH)
+//    {
+//        playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * deltaX.x;
+//    }
+//    else
+//    {
+//        playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * deltaX.z;
+//    }
+//}
+//else
+//{
+//    if (playerSM.Direction == EDirection.NORTH || playerSM.Direction == EDirection.SOUTH)
+//    {
+//        playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * diffX.x;
+//    }
+//    else
+//    {
+//        playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * diffX.z;
+//    }
+//}
+
+//float sidewaysPos = 0;
+//Vector3 multiplierVector = Vector3.zero;
+//if (playerSM.Direction == EDirection.NORTH || playerSM.Direction == EDirection.SOUTH)
+//{
+//    sidewaysPos = playerTransform.localPosition.x;
+//    multiplierVector = Vector3.right;
+//}
+//else
+//{
+//    sidewaysPos = playerTransform.localPosition.z;
+//    multiplierVector = Vector3.forward;
+//}
+//float targetPos = sidewaysPos + playerSM.TargetLanePosition;
+//if (playerSM.IsOnTargetLane(sidewaysPos))
+//{
+//    playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * 0;
+//    return;
+//}
+////Vector3 diffX = playerSM.CalculateDistanceToTargetLane(sidewaysPos);
+//float desiredPosition = playerSM.DesiredDifference + sidewaysPos;
+//Vector3 diffX = desiredPosition * multiplierVector;
+
+//Vector3 deltaX = diffX.normalized * laneSwitchSpeed * Time.deltaTime;
+//if (deltaX.sqrMagnitude < diffX.sqrMagnitude)
+//{
+//    playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * deltaX.x;
+//}
+//else
+//{
+//    playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * diffX.x;
+//}

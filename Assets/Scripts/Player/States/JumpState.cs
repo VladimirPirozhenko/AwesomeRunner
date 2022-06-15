@@ -18,13 +18,13 @@ public class JumpState : MovingState
     public override void OnStateEnter()
     {
         playerSM.PlayJumpingAnimation(true);
-        playerSM.ChangeRightHandRigWeight(from: playerSM.RightHandRigWeight, to: 0.85f,timeToChange: 0.1f);
+        playerSM.ChangeRigWeight(playerSM.RightHandRig,from: playerSM.RightHandRigWeight, to: 0.85f,timeToChange: 0.1f);
     }
 
     public override void OnStateExit()
     {
         playerSM.PlayJumpingAnimation(false);      
-        playerSM.ChangeRightHandRigWeight(1);
+        playerSM.ChangeRigWeight(playerSM.RightHandRig,1);
         EndJump();
     }
     public override void Tick()
@@ -39,11 +39,11 @@ public class JumpState : MovingState
         float deltaY = deltaYCurve.Evaluate(jumpProgress) * jumpHeight;
         float diff = deltaY - previousDeltaY;
         previousDeltaY = deltaY;
-        VerticalDeltaPosition = diff;
+        playerSM.VerticalDeltaPosition = diff;
         if (jumpProgress > internalJumpTime)
         {
             expiredTime = 0;
-            VerticalDeltaPosition = 0;
+            playerSM.VerticalDeltaPosition = 0;
             playerSM.SetState(playerSM.PlayerGroundState);
         }
     }
@@ -51,6 +51,6 @@ public class JumpState : MovingState
     {
         previousDeltaY = 0;
         expiredTime = 0;
-        VerticalDeltaPosition = 0;
+        playerSM.VerticalDeltaPosition = 0;
     }
 }

@@ -7,17 +7,21 @@ using UnityEngine;
 
 public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
 {
-    [SerializeField] private Chunk chunkPrefab;
-    //[SerializeField] private Chunk turningChunkPrefab;
+    [SerializeField] private StraightChunk chunkPrefab;
+    [SerializeField] private TurningChunk turningChunkPrefab;
     [SerializeField] [Range(1, 100)] private int chunkCount;
     [SerializeField] private float spawnDelay;
     [SerializeField] private ChunkGenerator chunkGenerator;
 
+   // private ChunkPool chunkPool;
     private ObjectPool<Chunk> chunkPool; //¬€Õ≈—“» ¬  À¿——
     private ObjectPool<Chunk> turningChunkPool;
     private Chunk lastChunk;
     private WaitForSeconds waitBeforeSpawn;
 
+    float defaultTurningChunkSpawnCooldown = 10;
+    float turningChunkSpawnCooldownTimeLeft = 0;
+    bool isTurningChunksOnCooldown = false;
 
     //private EMovingDirection spawnDirection;
     private Vector3 newSpawnPosition;
@@ -37,10 +41,16 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
     //{
     //    OnChunkReturned -= Spawn;
     //}
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+            Spawn();
+    }
     public void SpawnInitialChunks()
     {
+        //chunkPool.CreateChunkPool(chunkPrefab);
         chunkPool = new ObjectPool<Chunk>(CreateChunk, GetChunk, ReleaseChunk, chunkCount);
-       // turningChunkPool = new ObjectPool<Chunk>(CreateTurningChunk, GetChunk, ReleaseChunk, chunkCount);
+        turningChunkPool = new ObjectPool<Chunk>(CreateTurningChunk, GetChunk, ReleaseChunk, chunkCount);
         float zOffset = 0;
         lastChunk = chunkPool[0];
         for (int i = 0; i < chunkCount / 2; i++)
@@ -53,20 +63,16 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
     }
     private Chunk CreateTurningChunk()
     {
-        //Chunk chunk = Instantiate(turningChunkPrefab);
-        //chunk.Init(this);
-        //chunk.ResetToDefault();
-        //chunk.transform.parent = this.transform;
-        //chunk.gameObject.SetActive(false);
-        //return chunk;
-        return null;
+        Chunk chunk = Instantiate(turningChunkPrefab);
+        chunk.Init(this);
+        chunk.transform.parent = this.transform;
+        chunk.gameObject.SetActive(false);
+        return chunk;
     }
     private Chunk CreateChunk()
     {
         Chunk chunk = Instantiate(chunkPrefab);
-        //chunk.gameObject.name 
         chunk.Init(this);
-        //chunk.ResetToDefault();
         chunk.transform.parent = this.transform;
         chunk.gameObject.SetActive(false);
         return chunk;
@@ -75,13 +81,14 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
     {
         //chunk.OnChunkPassed += DelayedReturnToPool;
         //chunk.ResetToDefault();
+        chunk.transform.position = lastChunk.transform.position + newSpawnPosition;//lastChunk.Collider.size.z * Vector3.forward;
         chunk.gameObject.SetActive(true);
         chunkGenerator.Generate(chunk);
     }
     private void ReleaseChunk(Chunk chunk)
     {
         //chunk.OnChunkPassed -= DelayedReturnToPool;
-        chunk.ResetToDefault();
+      
         foreach (Coin coin in chunk.Coins)
         {
             chunkGenerator.CoinPool.ReturnToPool(coin);
@@ -90,59 +97,45 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
         {
             chunkGenerator.ObstaclePool.ReturnToPool(obstacle);
         }
-      
+        chunk.ResetToDefault();
+        chunk.Coins.Clear();
+        chunk.Obstacles.Clear();
         chunk.gameObject.SetActive(false);
     }
-    private static System.Random s_Generator = new System.Random();
+   
+
+    private IEnumerator PutTurningChunksOnCooldown()
+    {
+        isTurningChunksOnCooldown = true;
+        while (turningChunkSpawnCooldownTimeLeft > 0)
+        {
+            turningChunkSpawnCooldownTimeLeft -= Time.deltaTime;
+            yield return null;
+        }
+        turningChunkSpawnCooldownTimeLeft = defaultTurningChunkSpawnCooldown;
+        isTurningChunksOnCooldown = false;
+    } 
+    private System.Random spawnChanceRandomGenerator = new System.Random();
     public void Spawn()
     {
-        //Chunk newChunk = null;    
-        //const double margin = 90.0 / 100.0;
-        //int result = s_Generator.NextDouble() <= margin ? 1 : 0;
-        //if (result == 0)
-        //{
-        Chunk newChunk = chunkPool.Get();
-        //}
-        //else
-        //{
-        //    newChunk = turningChunkPool.Get();
-        //}
-        //
-        //
-
-  
-        //switch (newChunk.chunkDirection)
-        //{
-        //    case EChunkDirection.NORTH:
-        //        newSpawnPosition = lastChunk.Collider.size.z * Vector3.forward;
-        //        Debug.Log("NORTH");
-        //        break;
-        //    case EChunkDirection.SOUTH:
-        //        //chunkToRotate.transform.Rotate(0, -180, 0, Space.World);
-        //        Debug.Log("SOUTH -180");
-        //        newSpawnPosition = -lastChunk.Collider.size.z * Vector3.forward;
-        //        break;
-        //    case EChunkDirection.WEST:
-        //        //chunkToRotate.transform.Rotate(0, -90, 0, Space.World);
-        //        Debug.Log("WEST -90");
-        //        newSpawnPosition = -lastChunk.Collider.size.x * Vector3.right;
-        //        break;
-        //    case EChunkDirection.EAST:
-        //        //chunkToRotate.transform.Rotate(0, 90, 0, Space.World);
-        //        Debug.Log("EAST 90");
-        //        newSpawnPosition = lastChunk.Collider.size.x * Vector3.right;
-        //        break;
-        //}
-       // newChunk.transform.position = lastChunk.transform.position + newSpawnPosition;
-        newChunk.transform.position = lastChunk.transform.position + lastChunk.Collider.size.z * Vector3.forward;//lastChunkPosition + newSpawnPosition;
-        Debug.Log("NEW CHUNK POS: " + newChunk.transform.position + newChunk.gameObject.activeSelf);
-        //for (int i = 0; i < newChunk.CoinPool.Capacity; i++)
+        Chunk newChunk = null;    
+        const double margin = 90.0 / 100.0;
+        int chunkSpawnChance = spawnChanceRandomGenerator.NextDouble() <= margin ? 1 : 0;
+        if (chunkSpawnChance == 1 || isTurningChunksOnCooldown)
         {
-           // Debug.Log("NEW CHUNK COIN POS: " + newChunk.CoinPool[i].transform.position + " " + newChunk.CoinPool[i].gameObject.activeSelf);
-            //Debug.Log("NEW CHUNK COIN LOCALPOS: " + newChunk.CoinPool[i].transform.localPosition + " " + newChunk.CoinPool[i].gameObject.activeSelf);
+             newChunk = chunkPool.Get();
         }
+        else
+        {         
+            StartCoroutine(PutTurningChunksOnCooldown());
+            newChunk = turningChunkPool.Get();  
+        } 
+        newChunk.ChangeTransformBasedOnPreviousChunk(lastChunk);
         lastChunk = newChunk;
     }
+
+
+
     public void DelayedReturnToPool(Chunk chunk)
     {
         StartCoroutine(ReturnToPool(chunk));

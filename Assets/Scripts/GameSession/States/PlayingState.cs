@@ -2,23 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayingState //: GameSessionState
+public class PlayingState : GameSessionState
 {
-    //public PlayingState(GameSession session) : base(session)
-    //{
+    public PlayingState(GameSessionStateMachine gameSessionStateMachine) : base(gameSessionStateMachine)
+    {
 
-    //}
-    //public override void OnStateEnter()
-    //{
-    //    session.ShowPauseMenuPopUp(false);
-    //    session.PauseSession(false);
-    //}
-    //public override void OnStateExit()
-    //{
+    }
+    public override void OnStateEnter()
+    {
+        gameSessionSM.ShowPauseMenuPopUp(false);
+        gameSessionSM.PauseSession(false);
+    }
+    public override void OnStateExit()
+    {
 
-    //}
-    //public override void Tick()
-    //{
+    }
+    public override void Tick()
+    {
 
-    //}
+    }
 }

@@ -28,6 +28,7 @@ public class ChunkGenerator : MonoBehaviour
     }
     public Chunk Generate(Chunk chunkToFill)
     {
+  
         //  int randomChunkPrefab = Random.Range(0, chunkPrefabs.Count);
         //Chunk chunk = Instantiate(chunkPrefabs[randomChunkPrefab], new Vector3(), new Quaternion());
         Obstacle obstacle = ObstaclePool.GetFromPool();//chunkToFill.ObstaclePool.Get();
@@ -47,11 +48,12 @@ public class ChunkGenerator : MonoBehaviour
         for (int i = 0; i < coinsOnLane; i++)
         {
             Coin coin = CoinPool.GetFromPool();//chunkToFill.CoinPool.Get();
-            coin.transform.localPosition = Vector3.zero;
-            coin.transform.position = Vector3.zero;
-            coin.transform.rotation = Quaternion.identity;
+            //coin.transform.SetParent(null);
+            //coin.transform.localPosition = Vector3.zero;
+            //coin.transform.position = Vector3.zero;
+            //coin.transform.rotation = Quaternion.identity;
             Vector3 coinPosition = Vector3.zero;
-            coinPosition.z = 5;//i * 2;//coinSize.z * 20 * coin.transform.localScale.z; 
+            coinPosition.z = i * coinSize.z * 20 * coin.transform.localScale.z; 
             coinPosition.x = LaneSystem.LaneWidth * randomCoinsLane;
             //if (randomCoinsLane == randomObstacleLane)
             //{
@@ -63,15 +65,16 @@ public class ChunkGenerator : MonoBehaviour
             //}
             //coin.gameObject.SetActive(true);
             //coin.transform.position = Vector3.zero;
-            coin.transform.localPosition = coinPosition;
-            //coin.transform.position = chunkToFill.transform.position + coinPosition;//coinPosition;
-            //coin.transform.SetParent(chunkToFill.transform, true);
-            
-            coin.transform.SetParent(chunkToFill.transform);
-            Debug.Log("CoinPosition: " + coin.transform.position);
+            //coin.transform.localPosition = coinPosition;
+            coin.transform.position = chunkToFill.transform.position + coinPosition;//coinPosition;
+                                                                                    //coin.transform.SetParent(chunkToFill.transform, true);
+            coin.UpdateStartPositionForSinAnimator();
+
+
+           // Debug.Log("CoinPosition: " + coin.transform.position);
             chunkToFill.Coins.Add(coin);
         }
-        Debug.Log("ChunkPosition: " + chunkToFill.transform.position);
+        //Debug.Log("ChunkPosition: " + chunkToFill.transform.position);
         //Debug.LogError("Chunk: " + chunkToFill.gameObject.name + " " + chunkToFill.CoinPool.Capacity);   
         return chunkToFill;
     }

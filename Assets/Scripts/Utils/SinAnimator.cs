@@ -7,13 +7,17 @@ public class SinAnimator : MonoBehaviour
     private Vector3 startPosition;
     [SerializeField] private float amplitude;
     [SerializeField] private Vector3 animationVelocity;
-    void Start()
+    private void OnEnable()
     {
-        startPosition = transform.localPosition;
+        UpdateStartPosition();
     }
+    public void UpdateStartPosition()
+    {
+        startPosition = transform.position;
+    }    
     void Update()
     {
-        transform.localPosition = startPosition + new Vector3(Mathf.Sin(Time.time * animationVelocity.x), 
+        transform.position = startPosition + new Vector3(Mathf.Sin(Time.time * animationVelocity.x), 
                                                          Mathf.Sin(Time.time * animationVelocity.y),
                                                          Mathf.Sin(Time.time * animationVelocity.z)) * amplitude;
     }

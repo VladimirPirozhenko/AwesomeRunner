@@ -2,25 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuState/* : GameSessionState*/
+public class MainMenuState : GameSessionState
 {
-    //public MainMenuState(GameSession session) : base(session)
-    //{
+    public MainMenuState(GameSessionStateMachine gameSessionStateMachine) : base(gameSessionStateMachine)
+    {
 
-    //}
-    //public override void OnStateEnter()
-    //{
-    //    session.ShowPauseMenuPopUp(true);
-    //    session.PauseSession(true);
-    //}
+    }
+    public override void OnStateEnter()
+    {
+        gameSessionSM.ShowPauseMenuPopUp(true);
+        gameSessionSM.PauseSession(true);
+    }
 
-    //public override void OnStateExit()
-    //{
-    //    session.ShowPauseMenuPopUp(false);
-    //    session.PauseSession(false);
-    //}
-    //public override void Tick()
-    //{
+    public override void OnStateExit()
+    {
+        gameSessionSM.ShowPauseMenuPopUp(false);
+        gameSessionSM.PauseSession(false);
+    }
+    public override void Tick()
+    {
 
-    //}
+    }
 }

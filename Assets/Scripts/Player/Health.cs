@@ -34,12 +34,9 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
     private float defaultInvincibilityTime = 2.5f;//PLAYER DATA ScriptableObject
     void Awake()
     {      
-       // MaxHealth = defaultMaxLives; // PlayerData.MaxHealth
-       // CurrentHealth = MaxHealth;
-        //InvincibilityTime = defaultInvincibilityTime; //PlayerData/InvincibilityTimer
         healthArgs = new HealthArgs(CurrentHealth, MaxHealth);
-        ResetToDefault();
-    }
+        ResetToDefault();     
+    } 
     public void TakeDamage(int amount)
     {
         CurrentHealth -= amount;

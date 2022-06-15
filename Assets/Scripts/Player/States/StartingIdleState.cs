@@ -20,8 +20,8 @@ public class StartingIdleState : PlayerState
     public override void OnStateExit()
     {
         playerSM.PlayIdleAnimation(false);
-        HorizontalDeltaPosition = Vector3.zero;
-        VerticalDeltaPosition = 0f;
+        playerSM.HorizontalDeltaPosition = Vector3.zero;
+        playerSM.VerticalDeltaPosition = 0f;
     }
     public override void Tick() {}
     public async void CountdownBeforeTheStart()

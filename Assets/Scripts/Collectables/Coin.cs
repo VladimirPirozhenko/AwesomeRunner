@@ -5,6 +5,8 @@ using UnityEngine;
 public class Coin : MonoBehaviour, ICollectable,IResettable
 {
     [SerializeField] private int coinValue;
+
+    private SinAnimator sinAnimator;
     public Renderer Renderer { get; private set; }
     public BoxCollider Collider { get; private set; }
     
@@ -14,12 +16,17 @@ public class Coin : MonoBehaviour, ICollectable,IResettable
     {
         Renderer = GetComponent<Renderer>();
         Collider = GetComponent<BoxCollider>();
+        sinAnimator = GetComponent<SinAnimator>();
     }
     public void Collect()
     {
         gameObject.SetActive(false);
         OnCoinCollected?.Invoke(coinValue);
         OnCoinDissapeared?.Invoke(this);
+    }
+    public void UpdateStartPositionForSinAnimator()
+    {
+        sinAnimator.UpdateStartPosition();
     }
     public void ResetToDefault()
     {

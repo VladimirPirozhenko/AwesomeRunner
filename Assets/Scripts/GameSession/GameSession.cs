@@ -1,34 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-
-public enum ESessionState { PLAYING, PAUSED_POP_UP, GAMEOVER_POP_UP, SCOREBOARD_UI, MAIN_MENU };
-//Текущая вкладка 
-//[RequireComponent(typeof(Player))]  
 public class GameSession : MonoBehaviour
 {
+    //[Serializable] public enum ESessionState { PLAYING, PAUSED_POP_UP, GAMEOVER_POP_UP, SCOREBOARD_UI, MAIN_MENU };
     [SerializeField] private Player player;
     [SerializeField] private SceneLoader sceneLoader;
     [SerializeField] private Scoreboard scoreboard;
     [SerializeField] private ScoreboardUI scoreboardUI;
     [SerializeField] private GameOverPopUp gameOverPopUp;
     [SerializeField] private PauseMenuPopUp pauseMenuPopUp;
-    //private Player player;
-    //public StateMachine<GameSession> SessionStateMachine { get; private set; }
-    //public PausedState SessionPausedState { get; private set; }
-    //public GameOverState SessionGameOverState { get; private set; }
-    //public ScoreboardState SessionScoreboardState { get; private set; }
-    //public PlayingState SessionPlayingState { get; private set; }
-    private ESessionState sessionState;
+
+    private GameSessionStateMachine gameSessionStateMachine;
+    [SerializeField] public GameSessionState SessionState { get; private set; }
 
     private void Awake()
     {
-        sessionState = ESessionState.PLAYING;
-       // player = GetComponent<Player>();   
+        gameSessionStateMachine = new GameSessionStateMachine(this);
+       // SetSessionState(gameSessionStateMachine.SessionScoreboardState);
+        SetSessionState(gameSessionStateMachine.SessionPlayingState);
+        // player = GetComponent<Player>();   
         //SessionStateMachine = new StateMachine<GameSession>();
-        //InitStates();
     }
     private void OnEnable()
     {
@@ -42,6 +36,7 @@ public class GameSession : MonoBehaviour
     }
     private void Update()
     {
+        //SessionState.Tick();
     //    switch (sessionState)
     //    {
     //        case ESessionState.PLAYING:
@@ -64,7 +59,7 @@ public class GameSession : MonoBehaviour
     //}
     public bool IsSessionPaused()
     {
-        if (sessionState == ESessionState.PAUSED_POP_UP)
+        if (SessionState == gameSessionStateMachine.SessionPausedState)
         {
             return true;
         }
@@ -73,12 +68,29 @@ public class GameSession : MonoBehaviour
     public void GameOver()
     {
         ShowGameOverPopUp(true);
-        SetSessionState(ESessionState.GAMEOVER_POP_UP);
+       // SetSessionState(stateComponent.state.GAMEOVER_POP_UP);
     }
 
-    public void SetSessionState(ESessionState state)
+    private void SetSessionState(GameSessionState state)//ESessionState state)
     {
-        sessionState = state;
+        gameSessionStateMachine.SetState(state);
+       // sessionState = stateComponent.state;
+    }
+    public void SetPausedState()
+    {
+        SetSessionState(gameSessionStateMachine.SessionPausedState);
+    }
+    public void SetPlayingState()
+    {
+        SetSessionState(gameSessionStateMachine.SessionPlayingState);
+    }
+    public void SetGameOverState()
+    {
+        SetSessionState(gameSessionStateMachine.SessionGameOverState);
+    }
+    public void SetScoreboardState()
+    {
+        SetSessionState(gameSessionStateMachine.SessionScoreboardState);
     }
     public void PauseSession(bool isPaused)
     {
@@ -87,35 +99,35 @@ public class GameSession : MonoBehaviour
         {
             Time.timeScale = 0;
             ShowPauseMenuPopUp(true);
-            SetSessionState(ESessionState.PAUSED_POP_UP);
+           // SetSessionState(ESessionState.PAUSED_POP_UP);
         }
         else
         {
             Time.timeScale = 1;
             ShowPauseMenuPopUp(false);
-            SetSessionState(ESessionState.PLAYING);
+           // SetSessionState(ESessionState.PLAYING);
         }
         
     }
     public void ClosePopUp()
     {
-        switch (sessionState)
-        {
-            case ESessionState.PLAYING:
-                break;
-            case ESessionState.PAUSED_POP_UP:
-                ShowPauseMenuPopUp(false);
-                SetSessionState(ESessionState.PLAYING);
-                break;
-            case ESessionState.GAMEOVER_POP_UP:
-                ShowGameOverPopUp(false);
-                SetSessionState(ESessionState.PLAYING);
-                break;
-            case ESessionState.SCOREBOARD_UI:
-                ShowScoreboardUI(false);
-                SetSessionState(ESessionState.PAUSED_POP_UP);
-                break;
-        }
+        //switch (sessionState)
+        //{
+        //    case ESessionState.PLAYING:
+        //        break;
+        //    case ESessionState.PAUSED_POP_UP:
+        //        ShowPauseMenuPopUp(false);
+        //      //  SetSessionState(ESessionState.PLAYING);
+        //        break;
+        //    case ESessionState.GAMEOVER_POP_UP:
+        //        ShowGameOverPopUp(false);
+        //       // SetSessionState(ESessionState.PLAYING);
+        //        break;
+        //    case ESessionState.SCOREBOARD_UI:
+        //        ShowScoreboardUI(false);
+        //       // SetSessionState(ESessionState.PAUSED_POP_UP);
+        //        break;
+        //}
     }
     public void HideAllPopUps()
     {
