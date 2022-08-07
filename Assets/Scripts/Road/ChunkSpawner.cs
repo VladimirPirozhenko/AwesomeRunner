@@ -9,7 +9,7 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
 {
     [SerializeField] private StraightChunk chunkPrefab;
     //[SerializeField] private TurningChunk turningChunkPrefab;
-    [SerializeField] [Range(1, 100)] private int chunkCount;
+    [SerializeField] [Range(1, 1000)] private int chunkCount;
     [SerializeField] private float spawnDelay;
     [SerializeField] private ChunkGenerator chunkGenerator;
 
