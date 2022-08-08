@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   <InvincibilityTime>k__BackingField: 3
-  <JumpHeight>k__BackingField: 5
-  <LaneSwitchSpeed>k__BackingField: 15
+  <JumpHeight>k__BackingField: 6
+  <LaneSwitchSpeed>k__BackingField: 17.5
   <Speed>k__BackingField: 20

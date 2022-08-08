@@ -34,80 +34,26 @@ public class PlayerStateMachine : StateMachine<Player>
     public Vector3 HorizontalDeltaPosition;
     public float VerticalDeltaPosition;
 
-    public Vector3 DeltaPosition;
-    public Vector3 forwardDirection;
-    public Vector3 sidewaysDirection;
-    //public EForwardDirection? InputDirection { get { return player.InputDirection; } }
-    public EDirection Direction => player.Direction;
     public EInputDirection? InputDirection { get { return player.InputDirection; } }
     public bool IsOnTargetLane(float position)
     {
         return player.LaneSystem.IsOnTargetLane(position);
     }
-    public float DesiredDifference { get { return player.LaneSystem.DesiredDifference; } }
-    public float TargetLanePosition { get { return player.LaneSystem.TargetPosition; } }
+    public float TargetPosition { get { return player.LaneSystem.TargetPosition; } }
+
     public float CalculateDistanceToTargetLane(float position)
     {
-        //
         return player.LaneSystem.CalculateDistanceToTargetLane(position) ;
-
-        //return player.LaneSystem.CalculateDistanceToTargetLane(playerTransform.position.z) * playerTransform.right;
-       // return player.LaneSystem.CalculateDistanceToTargetLane(playerTransform.position.x) * playerTransform.right;
     }
+
     public void IncreaseTargetLane(int amount = 1)
     {
-        if (player.IsTurning)
-        {
-            player.IsTurning = false;
-            return;
-        }
-        if (Direction == EDirection.NORTH || Direction == EDirection.WEST)
-        {
-            player.LaneSystem.TargetLane += amount;
-        }
-        else
-        {
-            player.LaneSystem.TargetLane -= amount;
-        }
-        
+        player.LaneSystem.IncreaseTargetLane(amount);
     }
     public void DecreaseTargetLane(int amount = 1)
     {
-        if (player.IsTurning)
-        {
-            player.IsTurning = false;
-            return;
-        }       
-        if (Direction == EDirection.NORTH || Direction == EDirection.WEST)
-        {
-            player.LaneSystem.TargetLane -= amount;
-        }
-        else
-        {
-            player.LaneSystem.TargetLane += amount;
-        }
+        player.LaneSystem.DecreaseTargetLane(amount);  
     }
-    public bool IsTurning { get { return player.IsTurning; } set { player.IsTurning = value; } }
-    public Vector3 start => player.startPoint;
-    public Vector3 end => player.endPoint;
-    //public void ChangeHorizontalDelta()
-    //{
-    //    switch (playerSM.Direction)
-    //    {
-    //        case EDirection.NORTH:
-    //            playerSM.HorizontalDeltaPosition.z = speed * Time.deltaTime; //INCAPSULATE
-    //            break;
-    //        case EDirection.SOUTH:
-    //            playerSM.HorizontalDeltaPosition.z = -speed * Time.deltaTime; //INCAPSULATE
-    //            break;
-    //        case EDirection.WEST:
-    //            playerSM.HorizontalDeltaPosition.x = -speed * Time.deltaTime; //INCAPSULATE
-    //            break;
-    //        case EDirection.EAST:
-    //            playerSM.HorizontalDeltaPosition.x = speed * Time.deltaTime; //INCAPSULATE
-    //            break;
-    //    }
-    //}
 
     public void Move(Vector3 deltaPosition)
         {
@@ -157,19 +103,19 @@ public class PlayerStateMachine : StateMachine<Player>
     //ADD CALCULATE SCORE
     #endregion
     #region Collider
-    public float DefaultColliderHeight { get { return player.playerCollider.defaultHeight; } } // =>
-    public Vector3 DefaultColliderCenter { get { return player.playerCollider.defaultCenter; } }
+    public float DefaultColliderHeight { get { return player.PlayerCollider.defaultHeight; } } // =>
+    public Vector3 DefaultColliderCenter { get { return player.PlayerCollider.defaultCenter; } }
     public void ChangeColliderHeight(float newHeight)
     {
-        player.playerCollider.ChangeColliderHeight(newHeight);
+        player.PlayerCollider.ChangeColliderHeight(newHeight);
     }
     public void ChangeColliderCenter(Vector3 newCenter)
     {
-        player.playerCollider.ChangeColliderCenter(newCenter);
+        player.PlayerCollider.ChangeColliderCenter(newCenter);
     }
     public void ResetColliderToDefault()
     {
-        player.playerCollider.ResetToDefault(); 
+        player.PlayerCollider.ResetToDefault(); 
     }
     #endregion
 }

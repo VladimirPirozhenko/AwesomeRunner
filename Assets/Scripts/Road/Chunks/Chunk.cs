@@ -57,30 +57,30 @@ public abstract class Chunk : MonoBehaviour, IResettable
     //}
     public void ChangeTransformBasedOnPreviousChunk(Chunk previousChunk)
     {
-        //ChangeDirectionBasedOnPreviousChunk(previousChunk);
+        ChangeDirectionBasedOnPreviousChunk(previousChunk);
         ChangePositionBasedOnPreviousChunk(previousChunk);
-       // ChangeRotationBasedOnPreviousChunk(previousChunk);
+        ChangeRotationBasedOnPreviousChunk(previousChunk);
     }
     abstract public void ChangeDirectionBasedOnPreviousChunk(Chunk previousChunk);
     private void ChangePositionBasedOnPreviousChunk(Chunk previousChunk)
     {
         float diffBetweenBeginAndCenter = Begin.localPosition.z;
-        transform.position = previousChunk.End.position - Begin.localPosition;
-        //switch (previousChunk.Direction)
-        //{
-        //    case EDirection.NORTH:
-        //        transform.position = previousChunk.End.position - Begin.localPosition;
-        //        break;
-        //    case EDirection.SOUTH:
-        //        transform.position = previousChunk.End.position + (diffBetweenBeginAndCenter * Vector3.forward);
-        //        break;
-        //    case EDirection.WEST:
-        //        transform.position = previousChunk.End.position + (diffBetweenBeginAndCenter * Vector3.right);
-        //        break;
-        //    case EDirection.EAST:
-        //        transform.position = previousChunk.End.position - (diffBetweenBeginAndCenter * Vector3.right);
-        //        break;
-        //}
+        //transform.position = previousChunk.End.position - Begin.localPosition;
+        switch (previousChunk.Direction)
+        {
+            case EDirection.NORTH:
+                transform.position = previousChunk.End.position - Begin.localPosition;
+                break;
+            case EDirection.SOUTH:
+                transform.position = previousChunk.End.position + (diffBetweenBeginAndCenter * Vector3.forward);
+                break;
+            case EDirection.WEST:
+                transform.position = previousChunk.End.position - (Begin.localPosition.x * Vector3.right);
+                break;
+            case EDirection.EAST:
+                transform.position = previousChunk.End.position - (diffBetweenBeginAndCenter * Vector3.right);
+                break;
+        }
     }
     private void ChangeRotationBasedOnPreviousChunk(Chunk previousChunk)
     {

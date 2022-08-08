@@ -4,64 +4,50 @@ using UnityEngine;
 
 public class LaneSystem : MonoBehaviour,IResettable
 {
+    [field: SerializeField] public float LaneWidth { get; private set; }
+
     [SerializeField] private int laneCount;
     public List<int> Lanes { get; private set; }
     public float CurrentPosition { get; private set; }
-    public Transform TargetTransform;
     public float TargetPosition { get;  set; }
-    public float AdditionalOffset { get;  set; }
     public float CurrentOffset { get; private set; }    
-    public float DesiredDifference { get;  set; }
+    public int TargetLane { get; private set; }
 
-    [SerializeField] private float laneWidth;
-    public float LaneWidth 
-    {
-        get
-        {
-            return laneWidth;
-        }
+    //public int TargetLane 
+    //{ 
+    //    get
+    //    {
+    //        return targetLane;
+    //    }
+    //    set
+    //    {
+    //        if (value == targetLane)
+    //            return;
+    //        if (value < Lanes[0])
+    //        {
+    //            return;
+    //        }
+    //        if (value > Lanes[Lanes.Count-1])
+    //        {
+    //            return;
+    //        }         
+    //        if (value < targetLane)
+    //        {
 
-        private set
-        {
-            laneWidth = value;
-        }
-    }
-    private int targetLane;
-    public int TargetLane 
-    { 
-        get
-        {
-            return targetLane;
-        }
-        set
-        {
-            if (value == targetLane)
-                return;
-            if (value < Lanes[0])
-            {
-                return;
-            }
-            if (value > Lanes[Lanes.Count-1])
-            {
-                return;
-            }         
-            if (value < targetLane)
-            {
-
-                TargetPosition -= LaneWidth ;
-                CurrentOffset -= laneWidth;
-                // DesiredDifference = -LaneWidth;
-            }
-            else 
-            {
+    //            TargetPosition -= LaneWidth ;
+    //            CurrentOffset -= LaneWidth;
+    //            // DesiredDifference = -LaneWidth;
+    //        }
+    //        else 
+    //        {
                 
-                TargetPosition += LaneWidth; //+ AdditionalOffset;
-                CurrentOffset += laneWidth;
-               // DesiredDifference = LaneWidth;
-            }
-            targetLane = value;
-        }
-    }
+    //            TargetPosition += LaneWidth; //+ AdditionalOffset;
+    //            CurrentOffset += LaneWidth;
+    //           // DesiredDifference = LaneWidth;
+    //        }
+    //        targetLane = value;
+    //    }
+    //}
 
     private void Awake()
     {
@@ -71,6 +57,29 @@ public class LaneSystem : MonoBehaviour,IResettable
             Lanes.Add(i);    
         }
         ResetToDefault();
+    }
+    public void IncreaseTargetLane(int amount)
+    {
+        TargetLane += amount;
+        if (TargetLane > Lanes[Lanes.Count - 1])
+        {
+            TargetLane -= amount;
+            return;
+        }
+        TargetPosition += LaneWidth;
+        CurrentOffset += LaneWidth;
+    }
+
+    public void DecreaseTargetLane(int amount)
+    {
+        TargetLane -= amount;
+        if (TargetLane < Lanes[0])
+        {
+            TargetLane += amount;
+            return;
+        }
+        TargetPosition -= LaneWidth;
+        CurrentOffset -= LaneWidth;
     }
     public bool IsOnTargetLane(float position)
     {
@@ -83,9 +92,9 @@ public class LaneSystem : MonoBehaviour,IResettable
 
     public void ResetToDefault()
     {
-        targetLane = laneCount / 2;
-        AdditionalOffset = 0;
+        TargetLane = laneCount / 2;
         CurrentOffset = 0;
-        TargetPosition = AdditionalOffset;
+        CurrentPosition = 0;
+        TargetPosition = 0;
     }
 }

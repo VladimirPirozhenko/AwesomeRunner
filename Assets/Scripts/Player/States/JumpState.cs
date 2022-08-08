@@ -9,7 +9,7 @@ public class JumpState : MovingState
     private float expiredTime = 0;
     private float previousDeltaY = 0;
     private float jumpHeight;
-    private float internalJumpTime = 0.5f;
+    private float internalJumpTime = 0.7f;
     public JumpState(PlayerStateMachine playerStateMachine, AnimationCurve curve) : base(playerStateMachine)
     {
         deltaYCurve = curve;
