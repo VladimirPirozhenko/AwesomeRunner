@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BasePool<T> : MonoBehaviour where T : MonoBehaviour
+public class BasePool<T> : MonoBehaviour where T : MonoBehaviour,IPoolable<T>
 {
     [field: SerializeField] public int Capacity { get; private set; }
     [SerializeField] private T prefab;
@@ -16,6 +16,7 @@ public class BasePool<T> : MonoBehaviour where T : MonoBehaviour
         T instance = Instantiate(prefab);
         instance.gameObject.SetActive(false);
         instance.transform.SetParent(gameObject.transform, false);
+        instance.OwningPool = this;
         return instance;
     }
 

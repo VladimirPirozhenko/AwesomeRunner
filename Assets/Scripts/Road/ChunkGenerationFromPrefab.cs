@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class ChunkGenerationFromPrefab //: IChunkGenerationStrategy
 {
+    [SerializeField] private readonly List<Chunk> chunks = new List<Chunk>();
     public void Generate()
     {
-       // throw new System.NotImplementedException();
+        
     }
 
 }

@@ -7,38 +7,37 @@ interface IObstacle
 	public void Impact();
 }
 [RequireComponent(typeof(BoxCollider))]
-//[RequireComponent(typeof(Renderer))]
-public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable
+
+public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable,IPoolable<Obstacle>
 {
     public BoxCollider Collider { get; private set; }
-    
-    //private Renderer defaultRenderer;
-    //private Renderer obstacleRenderer;
+    public BasePool<Obstacle> OwningPool { private get;  set; }
+
     private void Awake()
     {
         Collider = GetComponent<BoxCollider>();
-        //defaultRenderer = GetComponent<Renderer>();
-        //obstacleRenderer = defaultRenderer;
     }
     public void ResetToDefault()
-    {
-        //if (obstacleRenderer.material.color != defaultRenderer.material.color)
-        //     obstacleRenderer.material.color = defaultRenderer.material.color;
-        //gameObject.transform.localRotation = Quaternion.identity;
-        //gameObject.transform.localScale = Vector3.one;  
-        // gameObject.transform.localPosition = Vector3.zero;
-        gameObject.SetActive(false);
-        gameObject.transform.SetParent(null);
+    {   
+        transform.localPosition = Vector3.zero;
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        gameObject.transform.SetParent(OwningPool.transform);
+        ReturnToPool();
     }
     public void Impact()
     {
-        //obstacleRenderer.material.color = Color.red;
-        gameObject.SetActive(false);
+        ResetToDefault();
     }
 
     public void DealDamage(IDamageable target, int amount)
     {
         target.TakeDamage(amount);
+    }
+
+    public void ReturnToPool()
+    {
+        OwningPool.ReturnToPool(this);
     }
 }
 

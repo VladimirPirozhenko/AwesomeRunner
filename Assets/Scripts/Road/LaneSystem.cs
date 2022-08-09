@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LaneSystem : MonoBehaviour,IResettable
 {
+    static public LaneSystem Instance { get; private set; }
     [field: SerializeField] public float LaneWidth { get; private set; }
 
     [SerializeField] private int laneCount;
@@ -17,6 +18,7 @@ public class LaneSystem : MonoBehaviour,IResettable
 
     private void Awake()
     {
+        Instance = this;
         Lanes = new List<int>(laneCount);
         bool isLanesEven = laneCount % 2 == 0;
         if (isLanesEven)

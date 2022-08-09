@@ -5,11 +5,11 @@ using UnityEngine;
 public class PlayerAnimator 
 {
     private Animator animator;
-    private string runningAnimStr = "Run"; //HASH
-    private string deadAnimStr = "Dead";
-    private string jumpAnimStr = "Jump";
-    private string slideAnimStr = "Slide";
-    private string idleAnimStr = "Idle";
+    private int runningHash = Animator.StringToHash("Run");
+    private int deadHash = Animator.StringToHash("Dead");
+    private int jumpHash = Animator.StringToHash("Jump");
+    private int slideHash = Animator.StringToHash("Slide");
+    private int idleHash = Animator.StringToHash("Idle");
 
     public PlayerAnimator(Animator animator)
     {
@@ -18,22 +18,22 @@ public class PlayerAnimator
     }
     public void SetRunState(bool isRunning)
     {
-        animator?.SetBool(runningAnimStr, isRunning);
+        animator?.SetBool(runningHash, isRunning);
     }
     public void SetJumpState(bool isJumping)
     {
-        animator?.SetBool(jumpAnimStr, isJumping);
+        animator?.SetBool(jumpHash, isJumping);
     }
     public void SetDeadState(bool isDead)
     {
-        animator?.SetBool(deadAnimStr, isDead);
+        animator?.SetBool(deadHash, isDead);
     }
     public void SetSlideState(bool isSliding)
     {
-        animator?.SetBool(slideAnimStr, isSliding);
+        animator?.SetBool(slideHash, isSliding);
     }
     public void SetIdleState(bool isIdle)
     {
-        animator?.SetBool(idleAnimStr, isIdle);
+        animator?.SetBool(idleHash, isIdle);
     }
 }

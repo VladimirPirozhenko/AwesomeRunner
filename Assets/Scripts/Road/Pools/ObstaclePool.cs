@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class ObstaclePool : BasePool<Chunk>
-{ }
+public class ObstaclePool : BasePool<Obstacle>
+{ 
+
+}

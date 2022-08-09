@@ -27,7 +27,6 @@ public class ChunkPool : BasePool<Chunk>
         chunk.Coins.Clear();
         foreach (var obstacle in chunk.Obstacles)
         {
-            obstacle.transform.SetParent(null);
             obstacle.ResetToDefault();
         }
         chunk.Obstacles.Clear();

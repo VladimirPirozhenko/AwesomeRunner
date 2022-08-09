@@ -5,18 +5,21 @@ using UnityEngine;
 
 public enum EDirection {  NORTH, SOUTH, EAST, WEST }
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Chunk : MonoBehaviour, IResettable
+public abstract class Chunk : MonoBehaviour, IResettable,IPoolable<Chunk>
 {
     protected ChunkSpawner spawner;
 
     [field: SerializeField] public Transform Begin { get;  private set; } 
-    [field: SerializeField] public Transform End { get; private set; } 
+    [field: SerializeField] public Transform End { get; private set; }
 
+    [SerializeField] private int gridRowCount;
     public List<Coin> Coins { get; private set; }
     public List<Obstacle> Obstacles { get; private set; }
     public BoxCollider Collider { get; private set; }
     public EDirection Direction { get; protected set; }
+    public BasePool<Chunk> OwningPool { private get;  set; }
 
+    public readonly List<Vector3> GridPositions = new List<Vector3>();
     virtual public void Init(ChunkSpawner spawner)
     {
         this.spawner = spawner;
@@ -25,7 +28,25 @@ public abstract class Chunk : MonoBehaviour, IResettable
     {
         Collider = GetComponent<BoxCollider>();
         Coins = new List<Coin>();   
-        Obstacles = new List<Obstacle>();   
+        Obstacles = new List<Obstacle>();
+
+        InitializeGrid();
+    }
+
+    private void InitializeGrid()
+    {
+        float chunkLength = (End.position - Begin.position).magnitude;
+        float rowLength = chunkLength / gridRowCount;
+
+        foreach (var lane in LaneSystem.Instance.Lanes)
+        {
+            float lanePosition = lane * LaneSystem.Instance.LaneWidth;
+            for (int i = 0; i < gridRowCount; i++)
+            {
+                Vector3 gridPosition = new Vector3(lanePosition, 0, i * rowLength);
+                GridPositions.Add(gridPosition);
+            }
+        }
     }
 
     public void ResetToDefault()
@@ -38,22 +59,20 @@ public abstract class Chunk : MonoBehaviour, IResettable
     {
         if (other.TryGetComponent(out Player player))
         {
-            //OnChunkPassed?.Invoke(this);
             spawner.DelayedReturnToPool(this);
             spawner.Spawn();
         }
     }
-    //public bool IsOnCooldown()
-    //{ 
-    //   return spawnCooldown > timeSinceLastSpawn ? true : false; 
-    //}
+
     public void ChangeTransformBasedOnPreviousChunk(Chunk previousChunk)
     {
         ChangeDirectionBasedOnPreviousChunk(previousChunk);
         ChangePositionBasedOnPreviousChunk(previousChunk);
         ChangeRotationBasedOnPreviousChunk(previousChunk);
     }
+
     abstract public void ChangeDirectionBasedOnPreviousChunk(Chunk previousChunk);
+
     private void ChangePositionBasedOnPreviousChunk(Chunk previousChunk)
     {
         float diffBetweenBeginAndCenter = Begin.localPosition.z;
@@ -91,5 +110,10 @@ public abstract class Chunk : MonoBehaviour, IResettable
                 transform.Rotate(0, -270, 0, Space.World);
                 break;
         }
+    }
+
+    public void ReturnToPool()
+    {
+        OwningPool.ReturnToPool(this);
     }
 }

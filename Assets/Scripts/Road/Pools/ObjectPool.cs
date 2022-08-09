@@ -12,7 +12,7 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
     private Action<T> actionOnRelease;
 
     private List<T> pool;
-    private List<T> inactiveElements;
+
     public ObjectPool(Func<T> actionOnCreate, Action<T> actionOnGet, Action<T> actionOnRelease, int initialCapacity)
     {
         Capacity = initialCapacity;
@@ -80,14 +80,17 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         element = null;
         return false;
     }
+
     public List<T> GetInactiveElements()
     {
         return pool.FindAll(obj => !obj.gameObject.activeInHierarchy);
     }
+
     public List<T> GetActiveElements()
     {
         return pool.FindAll(obj => obj.gameObject.activeInHierarchy);
     }
+
     public T ExpandPool()
     {
         var obj = actionOnCreate();
@@ -95,6 +98,7 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         pool.Add(obj);
         return obj;
     }
+
     public void ReturnToPool(T obj)
     {
         if (obj == null)
@@ -105,6 +109,7 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         }
         return;
     }
+
     public IEnumerator<T> GetEnumerator()
     {
         return pool.GetEnumerator();
