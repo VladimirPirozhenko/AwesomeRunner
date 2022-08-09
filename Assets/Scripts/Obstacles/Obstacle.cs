@@ -7,7 +7,7 @@ interface IObstacle
 	public void Impact();
 }
 [RequireComponent(typeof(BoxCollider))]
-[RequireComponent(typeof(Renderer))]
+//[RequireComponent(typeof(Renderer))]
 public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable
 {
     public BoxCollider Collider { get; private set; }
@@ -27,8 +27,8 @@ public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable
         //gameObject.transform.localRotation = Quaternion.identity;
         //gameObject.transform.localScale = Vector3.one;  
         // gameObject.transform.localPosition = Vector3.zero;
-        //gameObject.SetActive(false);
-        //gameObject.transform.SetParent(null);
+        gameObject.SetActive(false);
+        gameObject.transform.SetParent(null);
     }
     public void Impact()
     {

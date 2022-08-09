@@ -63,7 +63,9 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         {
             return element;
         }
-        return ExpandPool();
+        T instance = ExpandPool();
+        instance.gameObject.SetActive(true);
+        return instance;
     }
     private bool TryGet(out T element)
     {

@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: a8665aeb045ea914485267288fe59128, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 6e182f8ba45b96f42a647eb6185acf5f, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,8 +37,8 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465829, g: 0.49641728, b: 0.57482105, a: 1}
+  m_Sun: {fileID: 654164605}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13e6eeecbe6be7e448121b1729686a08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <LaneWidth>k__BackingField: 4
+  <LaneWidth>k__BackingField: 6
   laneCount: 3
 --- !u!4 &106057763
 Transform:
@@ -483,11 +483,57 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84bdd12bd3145b144a47594f105eb316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkPrefab: {fileID: 7423857566743054097, guid: 1d7dba45cf0d4894e84ae3e02027d01e, type: 3}
-  turningChunkPrefab: {fileID: 6992658927559702691, guid: 08b18b4cf349c24439781e0e85c9d623, type: 3}
   chunkCount: 100
   spawnDelay: 5
   chunkGenerator: {fileID: 1125063958}
+  chunkPool: {fileID: 2025791532}
+--- !u!1 &2025791531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2025791533}
+  - component: {fileID: 2025791532}
+  m_Layer: 0
+  m_Name: ChunkPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2025791532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025791531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 506813849e0819640b461c8c8c8331b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Capacity>k__BackingField: 20
+  prefab: {fileID: -8446043830258454905, guid: 378b62e0e298e0642abc436c57f8825a, type: 3}
+  spawner: {fileID: 1872880027}
+--- !u!4 &2025791533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025791531}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2249596435903131709 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6873339892592015098, guid: 01fa89ab9028c864b8560621b7d51f50, type: 3}

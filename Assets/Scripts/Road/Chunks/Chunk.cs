@@ -8,18 +8,10 @@ public enum EDirection {  NORTH, SOUTH, EAST, WEST }
 public abstract class Chunk : MonoBehaviour, IResettable
 {
     protected ChunkSpawner spawner;
-    //[SerializeField] protected Coin defaultCoinPrefab;
-    //[SerializeField] protected Obstacle defaultObstaclePrefab;
 
-    [SerializeField] private Transform begin;
-    [SerializeField] private Transform end;
+    [field: SerializeField] public Transform Begin { get;  private set; } 
+    [field: SerializeField] public Transform End { get; private set; } 
 
-    //[SerializeField] private float spawnCooldown;
-    //private float timeSinceLastSpawn = 0;
-                                            //10 < 
-    
-    public Transform Begin { get { return begin; } private set { begin = value; } }
-    public Transform End { get { return end; } private set { end = value; } }
     public List<Coin> Coins { get; private set; }
     public List<Obstacle> Obstacles { get; private set; }
     public BoxCollider Collider { get; private set; }

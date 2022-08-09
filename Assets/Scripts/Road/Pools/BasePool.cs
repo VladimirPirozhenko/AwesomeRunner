@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class BasePool<T> : MonoBehaviour where T : MonoBehaviour
 {
-    [SerializeField] private int capacity;
+    [field: SerializeField] public int Capacity { get; private set; }
     [SerializeField] private T prefab;
     private ObjectPool<T> pool; 
 
     private void Awake()
     {
-        pool = new ObjectPool<T>(CreateAction, GetAction, ReturnAction, capacity);
+        pool = new ObjectPool<T>(CreateAction, GetAction, ReturnAction, Capacity);
     }
 
     protected virtual T CreateAction()

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
-[RequireComponent(typeof(ChunkSpawner))]
+﻿using UnityEngine;
+
 public class ChunkPool : BasePool<Chunk>
 {  
     [SerializeField] private ChunkSpawner spawner;
@@ -10,6 +8,7 @@ public class ChunkPool : BasePool<Chunk>
     {
         Chunk chunk = base.CreateAction();
         chunk.Init(spawner);
+        chunk.transform.position = new Vector3(0,0,0);    
         return chunk;
     }
 
@@ -26,6 +25,11 @@ public class ChunkPool : BasePool<Chunk>
         //}
         chunk.ResetToDefault();
         chunk.Coins.Clear();
+        foreach (var obstacle in chunk.Obstacles)
+        {
+            obstacle.transform.SetParent(null);
+            obstacle.ResetToDefault();
+        }
         chunk.Obstacles.Clear();
     }
 }

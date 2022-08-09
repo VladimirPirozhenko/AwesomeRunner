@@ -5,20 +5,15 @@ using UnityEngine;
 public class ChunkGenerator : MonoBehaviour
 {
     //[SerializeField] private Coin coinPrefab;
-    //[SerializeField] private Obstacle obstaclePrefab;
+    [SerializeField] private Obstacle obstaclePrefab;
     [SerializeField] private LaneSystem LaneSystem;
-
+    [SerializeField] private int gridColumns;
     public CoinPool CoinPool { get; private set; }
     public ObstaclePool ObstaclePool { get; private set; }
-
-    private Vector3 obstacleSize;
-    private Vector3 coinSize;
-
-    private float coinElevation;
-    private  int coinsOnLane;
-    private int maxCoinsOnLane = 7;
+    
     private void Awake()
     {
+
         //obstacleSize = obstaclePrefab.GetComponent<BoxCollider>().size;
         //coinSize = coinPrefab.GetComponent<BoxCollider>().size;
         //CoinPool = GetComponent<CoinPool>();
@@ -28,7 +23,21 @@ public class ChunkGenerator : MonoBehaviour
     }
     public Chunk Generate(Chunk chunkToFill)
     {
-  
+        var obstacle = Instantiate(obstaclePrefab);
+        List<Vector3> gridPositions = new List<Vector3>();   
+        foreach (var lane in LaneSystem.Lanes)
+        {
+            float lanePosition = lane * LaneSystem.LaneWidth;
+            for (int i = 0; i < gridColumns; i++)
+            {
+                Vector3 gridPosition = new Vector3(lanePosition,0, i * obstacle.Collider.size.z);
+                gridPositions.Add(gridPosition);
+            }
+        }
+       
+        chunkToFill.Obstacles.Add(obstacle);    
+        obstacle.transform.SetParent(chunkToFill.transform, false);
+        obstacle.transform.localPosition = gridPositions.GetRandomElement();
         ////  int randomChunkPrefab = Random.Range(0, chunkPrefabs.Count);
         ////Chunk chunk = Instantiate(chunkPrefabs[randomChunkPrefab], new Vector3(), new Quaternion());
         //Obstacle obstacle = ObstaclePool.GetFromPool();//chunkToFill.ObstaclePool.Get();

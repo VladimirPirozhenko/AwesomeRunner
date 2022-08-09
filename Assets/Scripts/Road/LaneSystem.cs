@@ -13,48 +13,40 @@ public class LaneSystem : MonoBehaviour,IResettable
     public float CurrentOffset { get; private set; }    
     public int TargetLane { get; private set; }
 
-    //public int TargetLane 
-    //{ 
-    //    get
-    //    {
-    //        return targetLane;
-    //    }
-    //    set
-    //    {
-    //        if (value == targetLane)
-    //            return;
-    //        if (value < Lanes[0])
-    //        {
-    //            return;
-    //        }
-    //        if (value > Lanes[Lanes.Count-1])
-    //        {
-    //            return;
-    //        }         
-    //        if (value < targetLane)
-    //        {
-
-    //            TargetPosition -= LaneWidth ;
-    //            CurrentOffset -= LaneWidth;
-    //            // DesiredDifference = -LaneWidth;
-    //        }
-    //        else 
-    //        {
-                
-    //            TargetPosition += LaneWidth; //+ AdditionalOffset;
-    //            CurrentOffset += LaneWidth;
-    //           // DesiredDifference = LaneWidth;
-    //        }
-    //        targetLane = value;
-    //    }
-    //}
+    public readonly Dictionary<int, float> LanesDict = new Dictionary<int, float>();
 
     private void Awake()
     {
         Lanes = new List<int>(laneCount);
-        for (int i = 0; i < laneCount; i++)
+        bool isLanesEven = laneCount % 2 == 0;
+        if (isLanesEven)
         {
-            Lanes.Add(i);    
+            for (int i = -laneCount / 2; i < laneCount / 2; i++)
+            {
+                Lanes.Add(i);
+            }
+        }
+        else
+        {
+            for (int i = -laneCount / 2; i <= laneCount / 2; i++)
+            {
+                Lanes.Add(i);
+            }
+        }
+
+        if (isLanesEven)
+        {
+            for (int i = -laneCount / 2; i < laneCount / 2; i++)
+            {
+                LanesDict.Add(i, i * LaneWidth);
+            }
+        }
+        else
+        {
+            for (int i = -laneCount / 2; i <= laneCount / 2; i++)
+            {
+                LanesDict.Add(i, i * LaneWidth);
+            }
         }
         ResetToDefault();
     }
@@ -92,7 +84,7 @@ public class LaneSystem : MonoBehaviour,IResettable
 
     public void ResetToDefault()
     {
-        TargetLane = laneCount / 2;
+        TargetLane = Lanes[laneCount / 2];
         CurrentOffset = 0;
         CurrentPosition = 0;
         TargetPosition = 0;
