@@ -2,14 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-interface IObstacle
-{
-	public void Impact();
-}
 [RequireComponent(typeof(BoxCollider))]
-
 public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable,IPoolable<Obstacle>
 {
+    [field: SerializeField] public bool IsOnAllLanes { get; private set; }
     public BoxCollider Collider { get; private set; }
     public BasePool<Obstacle> OwningPool { private get;  set; }
 
@@ -38,23 +34,5 @@ public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable,IPoola
     public void ReturnToPool()
     {
         OwningPool.ReturnToPool(this);
-    }
-}
-
-public class Turret : MonoBehaviour, IObstacle, IDamageDealer, IResettable
-{
-    public void DealDamage(IDamageable target, int amount)
-    {
-        target.TakeDamage(amount);
-    }
-
-    public void Impact()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void ResetToDefault()
-    {
-        gameObject.SetActive(true);
     }
 }

@@ -13,6 +13,7 @@ public class LaneSystem : MonoBehaviour,IResettable
     public float TargetPosition { get;  set; }
     public float CurrentOffset { get; private set; }    
     public int TargetLane { get; private set; }
+    public int CenterLane { get; private set; }
 
     public readonly Dictionary<int, float> LanesDict = new Dictionary<int, float>();
 
@@ -87,6 +88,7 @@ public class LaneSystem : MonoBehaviour,IResettable
     public void ResetToDefault()
     {
         TargetLane = Lanes[laneCount / 2];
+        CenterLane = Lanes[laneCount / 2];
         CurrentOffset = 0;
         CurrentPosition = 0;
         TargetPosition = 0;

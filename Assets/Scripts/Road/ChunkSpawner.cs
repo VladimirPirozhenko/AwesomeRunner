@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
 {
-    [SerializeField] [Range(1, 100)] private int chunkCount;
     [SerializeField] private float spawnDelay;
     [SerializeField] private ChunkGenerator chunkGenerator;
     [SerializeField] private ChunkPool chunkPool; 

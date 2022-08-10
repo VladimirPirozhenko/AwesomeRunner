@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerData", menuName = "Player", order = 1)]
+[CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/Player")]
 public class PlayerData : ScriptableObject
 {
     [field: SerializeField] public int InvincibilityTime {  get; private set; }
