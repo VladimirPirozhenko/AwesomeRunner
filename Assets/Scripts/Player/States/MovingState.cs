@@ -9,7 +9,7 @@ public abstract class MovingState : PlayerState
     private float laneSwitchSpeed; //SO
     protected const float gravity = -9.8f;
     private float invincibilityTime => playerSM.PlayerData.InvincibilityTime; 
-    public MovingState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)//, PlayerController controller
+    public MovingState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
     {
         this.playerSM = playerStateMachine;
         speed = playerData.Speed;
@@ -21,7 +21,7 @@ public abstract class MovingState : PlayerState
 
     public override void Tick()
     {
-        HandleDirection();
+        //HandleDirection();
         playerSM.HorizontalDeltaPosition = speed * playerSM.PlayerTransform.forward * Time.deltaTime ;
         playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.forward * speed * Time.deltaTime; 
         playerSM.UpdateDistance(playerSM.HorizontalDeltaPosition.z); //вынести в контроллер
@@ -36,26 +36,28 @@ public abstract class MovingState : PlayerState
     {
         playerSM.VerticalDeltaPosition += gravity * Time.deltaTime;
     }
-    private void HandleDirection()
-    {
-        switch (playerSM.InputDirection)
-        {
-            case EInputDirection.RIGHT:
-                playerSM.IncreaseTargetLane();
-                break;
-            case EInputDirection.LEFT:
-                playerSM.DecreaseTargetLane();
-                break;
-            case EInputDirection.UP:
-                playerSM.SetState(playerSM.PlayerJumpState);
-                break;
-            case EInputDirection.DOWN:
-                playerSM.SetState(playerSM.PlayerSlideState);
-                break;
-            default:
-                break;
-        }
-    }
+
+
+    //private void HandleDirection()
+    //{
+    //    switch (playerSM.InputDirection)
+    //    {
+    //        case EInputDirection.RIGHT:
+    //            playerSM.IncreaseTargetLane();
+    //            break;
+    //        case EInputDirection.LEFT:
+    //            playerSM.DecreaseTargetLane();
+    //            break;
+    //        case EInputDirection.UP:
+    //            playerSM.SetState(playerSM.PlayerJumpState);
+    //            break;
+    //        case EInputDirection.DOWN:
+    //            playerSM.SetState(playerSM.PlayerSlideState);
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    //}
 
     public void SwitchLane()
     {
@@ -80,6 +82,9 @@ public abstract class MovingState : PlayerState
             playerSM.HorizontalDeltaPosition += playerSM.PlayerTransform.right * diffX.x;
         }
     }
+
+
+    
 }
 
 

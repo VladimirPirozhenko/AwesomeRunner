@@ -5,7 +5,7 @@ using UnityEngine;
 public class SlideState : MovingState
 {
     private float expiredTime = 0;
-    private float slideDuration = 1;
+    private float slideDuration = 0.9f;
     public SlideState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
     {}
     public override void OnStateEnter()

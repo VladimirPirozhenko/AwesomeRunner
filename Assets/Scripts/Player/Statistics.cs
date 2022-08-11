@@ -12,7 +12,7 @@ public class Statistics : MonoBehaviour,IResettable //мегюбхяхлн нр океепю
     public event Action<int> OnCoinCountChanged = delegate { };
     public event Action<float> OnDistanceChanged = delegate { };
     public event Action<int> OnScoreCalculated = delegate { };
-
+    [SerializeField] PlayerHUDView PlayerHUD;
     private void Awake()
     {
         ResetToDefault();
@@ -27,7 +27,7 @@ public class Statistics : MonoBehaviour,IResettable //мегюбхяхлн нр океепю
     }
     private void Update()
     {
-        //CalculateScore();
+        CalculateScore();
     }
     public void UpdateCoinCount(int amount)
     {
@@ -43,6 +43,7 @@ public class Statistics : MonoBehaviour,IResettable //мегюбхяхлн нр океепю
     {
         score = Mathf.FloorToInt(coinCount * coinMultiplier + distance);
         OnScoreCalculated?.Invoke(score);
+        PlayerHUD.UpdateScore(score.ToString());
     }
 
     public void ResetToDefault()

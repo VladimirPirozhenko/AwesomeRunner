@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    [SerializeField] private Obstacle obstaclePrefab;
     [SerializeField] private LaneSystem LaneSystem;
-    [SerializeField] private int gridColumns;
     public CoinPool CoinPool { get; private set; }
     [field: SerializeField] public List<ObstaclePool> ObstaclePools { get; private set; }
     
@@ -14,7 +12,6 @@ public class ChunkGenerator : MonoBehaviour
     {
         var obstaclePool = ObstaclePools.GetRandomElement();
         var obstacle = obstaclePool.GetFromPool();
-   
         chunkToFill.Obstacles.Add(obstacle);    
         obstacle.transform.SetParent(chunkToFill.transform, true);
         obstacle.transform.localPosition = chunkToFill.GridPositions.GetRandomElement();

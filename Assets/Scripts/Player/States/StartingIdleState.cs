@@ -13,7 +13,7 @@ public class StartingIdleState : PlayerState
         playerSM.PlayIdleAnimation(true);
         //Session.SetPlayingState();
         //Session.ShowGameOverPopUp(false);
-        playerTransform.position = new Vector3(0, 0, 15);
+        playerTransform.position = new Vector3(0, 1, 15);
         countdownTime = 3;
         CountdownBeforeTheStart();
     }

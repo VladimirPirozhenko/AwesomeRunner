@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(Statistics))]
 
-public class Player : MonoBehaviour, IResettable
+public class Player : MonoBehaviour,IResettable, ICommandTranslator
 {
     #region StateMachine
 
@@ -35,9 +35,6 @@ public class Player : MonoBehaviour, IResettable
 
     #region MovementControl
 
-    private IPlayerInput input;                          
-    public EInputDirection? InputDirection { get; private set; }
-
     [SerializeField] private LaneSystem laneSystem;
     public LaneSystem LaneSystem { get { return laneSystem; } private set { laneSystem = value; } }
     public CharacterController CharacterController { get; private set; }
@@ -50,7 +47,7 @@ public class Player : MonoBehaviour, IResettable
 
     private void Awake()
     {
-        input = new ArrowKeysInput();
+        GameSession.Instance.InputTranslator.AddNode(this);
         animator = GetComponent<Animator>();
         if (animator)
             PlayerAnimator = new PlayerAnimator(animator);
@@ -73,9 +70,10 @@ public class Player : MonoBehaviour, IResettable
     {
         PlayerStateMachine.SetState(PlayerStateMachine.PlayerStartingIdleState);
     }
+
+
     private void Update()
     {
-        InputDirection = input.ScanDirection();
         PlayerStateMachine.Tick();   
     }
     private void FixedUpdate()
@@ -140,5 +138,26 @@ public class Player : MonoBehaviour, IResettable
     {     
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
         ResetToDefault();
+    }
+
+    public void TranslateCommand(ECommand command)
+    {
+        switch (command)
+        {
+            case ECommand.RIGHT:
+                PlayerStateMachine.IncreaseTargetLane();
+                break;
+            case ECommand.LEFT:
+                PlayerStateMachine.DecreaseTargetLane();
+                break;
+            case ECommand.UP:
+                PlayerStateMachine.SetState(PlayerStateMachine.PlayerJumpState);
+                break;
+            case ECommand.DOWN:
+                PlayerStateMachine.SetState(PlayerStateMachine.PlayerSlideState);
+                break;
+            default:
+                break;
+        }
     }
 }

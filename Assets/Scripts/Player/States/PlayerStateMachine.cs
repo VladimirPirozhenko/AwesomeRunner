@@ -34,7 +34,6 @@ public class PlayerStateMachine : StateMachine<Player>
     public Vector3 HorizontalDeltaPosition;
     public float VerticalDeltaPosition;
 
-    public EInputDirection? InputDirection { get { return player.InputDirection; } }
     public bool IsOnTargetLane(float position)
     {
         return player.LaneSystem.IsOnTargetLane(position);

@@ -35,15 +35,17 @@ public abstract class Chunk : MonoBehaviour, IResettable,IPoolable<Chunk>
 
     private void InitializeGrid()
     {
-        float chunkLength = (End.position - Begin.position).magnitude;
+        Vector3 chunkLengthVector = (End.position - Begin.position);
+        float chunkLength = chunkLengthVector.magnitude;
         float rowLength = chunkLength / gridRowCount;
-
+        Debug.DrawLine(Vector3.zero, new Vector3(0, 5, 0), Color.red);
         foreach (var lane in LaneSystem.Instance.Lanes)
         {
             float lanePosition = lane * LaneSystem.Instance.LaneWidth;
             for (int i = 0; i < gridRowCount; i++)
             {
                 Vector3 gridPosition = new Vector3(lanePosition, 0, i * rowLength);
+                Debug.DrawLine(gridPosition, Vector3.up* 100,Color.red,500);    
                 GridPositions.Add(gridPosition);
             }
         }
