@@ -4,6 +4,7 @@ It utilizes game development techniques and patterns such as <br />
 
 - ObjectPooling 
 - StateMachine
+- Strategy
 - Singleton
 - UI/Logics Separation
 
