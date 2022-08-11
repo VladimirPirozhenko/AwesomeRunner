@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PlayerCollider : IResettable//: MonoBehaviour
+public class PlayerCollider : IResettable
 {
     CharacterController characterController;
     public float defaultHeight { get; private set; }

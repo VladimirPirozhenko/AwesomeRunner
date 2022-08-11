@@ -13,7 +13,7 @@ public class ScoreboardView : BaseView
         //Instance = this;    
     }
 
-    public void RefreshPlayerCards(List<PlayerScoreboardCardData> cardsData)
+    public void AddPlayerCards(List<PlayerScoreboardCardData> cardsData)
     {
         foreach (var cardData in cardsData)
         {

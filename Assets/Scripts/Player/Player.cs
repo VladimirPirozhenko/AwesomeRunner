@@ -47,7 +47,7 @@ public class Player : MonoBehaviour,IResettable, ICommandTranslator
 
     private void Awake()
     {
-        GameSession.Instance.InputTranslator.AddNode(this);
+        GameSession.Instance.InputTranslator.AddCommandTranslator(this);
         animator = GetComponent<Animator>();
         if (animator)
             PlayerAnimator = new PlayerAnimator(animator);
@@ -158,6 +158,30 @@ public class Player : MonoBehaviour,IResettable, ICommandTranslator
                 break;
             default:
                 break;
+        }
+    }
+
+    public void TranslateCommand(ECommand command, PressedState state)
+    {
+        if (state.IsPressed)
+        {
+            switch (command)
+            {
+                case ECommand.RIGHT:
+                    PlayerStateMachine.IncreaseTargetLane();
+                    break;
+                case ECommand.LEFT:
+                    PlayerStateMachine.DecreaseTargetLane();
+                    break;
+                case ECommand.UP:
+                    PlayerStateMachine.SetState(PlayerStateMachine.PlayerJumpState);
+                    break;
+                case ECommand.DOWN:
+                    PlayerStateMachine.SetState(PlayerStateMachine.PlayerSlideState);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

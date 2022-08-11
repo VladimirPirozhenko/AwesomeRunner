@@ -7,7 +7,7 @@ public class ViewManager : MonoBehaviour
 {
     public static ViewManager Instance { get; private set; }    
     [SerializeField] private List<BaseView> views = new List<BaseView>();
-    [SerializeField] private BaseView defaultView;
+    [SerializeField] private List<BaseView> defaultViews;
     [SerializeField] private bool autoInitialize;
     private void Awake()
     {
@@ -25,7 +25,12 @@ public class ViewManager : MonoBehaviour
             view.Init();
             view.Show(false);   
         }
-        if (defaultView != null) defaultView.Show(true);
+        if (defaultViews.IsEmpty())
+            return;
+        foreach (var view in defaultViews)
+        {
+            view.Show(true);
+        }     
     }
     public void Init<T>() where T : BaseView
     {

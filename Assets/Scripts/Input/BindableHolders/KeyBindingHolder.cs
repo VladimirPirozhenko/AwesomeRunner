@@ -9,10 +9,12 @@ public class KeyBindingHolder : IBindingHolder<KeyBinding>
 
     private readonly Dictionary<ECommand, KeyBinding> DefaultKeyBindings = new Dictionary<ECommand, KeyBinding>
     {
-        {ECommand.DOWN, new KeyBinding(KeyCode.DownArrow)},
-        {ECommand.UP, new KeyBinding(KeyCode.UpArrow)},
-        {ECommand.LEFT, new KeyBinding(KeyCode.LeftArrow)},
-        {ECommand.RIGHT, new KeyBinding(KeyCode.RightArrow)},
+        {ECommand.NONE, new KeyBinding(KeyCode.None)},
+        {ECommand.DOWN, new KeyBinding(KeyCode.DownArrow,KeyCode.S)},
+        {ECommand.UP, new KeyBinding(KeyCode.UpArrow,KeyCode.W)},
+        {ECommand.LEFT, new KeyBinding(KeyCode.LeftArrow,KeyCode.A)},
+        {ECommand.RIGHT, new KeyBinding(KeyCode.RightArrow,KeyCode.D)},
+        {ECommand.OPEN_SCOREBOARD, new KeyBinding(KeyCode.Tab)}
     };
 
     public void Init()

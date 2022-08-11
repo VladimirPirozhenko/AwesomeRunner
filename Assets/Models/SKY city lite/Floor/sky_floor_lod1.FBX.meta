@@ -1,0 +1,119 @@
+fileFormatVersion: 2
+guid: 71f6b54e2e708df4db10865532ccfe85
+timeCreated: 1459742967
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: sky_border
+    100002: sky_border001
+    100004: sky_fence
+    100006: sky_fence001
+    100008: sky_floor
+    100010: sky_floor_bottom
+    100012: //RootNode
+    100014: sky_fence 1
+    100016: sky_fence002
+    100018: sky_floor_bottom_curve
+    400000: sky_border
+    400002: sky_border001
+    400004: sky_fence
+    400006: sky_fence001
+    400008: sky_floor
+    400010: sky_floor_bottom
+    400012: //RootNode
+    400014: sky_fence 1
+    400016: sky_fence002
+    400018: sky_floor_bottom_curve
+    2300000: sky_border
+    2300002: sky_border001
+    2300004: sky_fence
+    2300006: sky_fence001
+    2300008: sky_floor
+    2300010: sky_floor_bottom
+    2300012: sky_fence 1
+    2300014: sky_fence002
+    2300016: //RootNode
+    3300000: sky_border
+    3300002: sky_border001
+    3300004: sky_fence
+    3300006: sky_fence001
+    3300008: sky_floor
+    3300010: sky_floor_bottom
+    3300012: sky_fence 1
+    3300014: sky_fence002
+    3300016: //RootNode
+    4300000: sky_floor
+    4300002: sky_border
+    4300004: sky_floor_bottom
+    4300006: sky_border001
+    4300008: sky_fence
+    4300010: sky_fence001
+    4300012: sky_fence
+    4300014: sky_fence002
+    4300016: sky_floor_lod1
+    6400000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 2
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

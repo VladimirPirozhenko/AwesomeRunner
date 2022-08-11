@@ -1,54 +1,58 @@
 ﻿
 using System.Collections.Generic;
-
-
 public class InputTranslator<T> where T : IBinding
 {
-    private List<ICommandTranslator> inputTranslators;
+    private List<ICommandTranslator> commandTranslators;
     private IBindingHolder<T> bindingHolder;
 
     public void Init(IBindingHolder<T> holder)
     {
-        inputTranslators = new List<ICommandTranslator>();
+        commandTranslators = new List<ICommandTranslator>();
         bindingHolder = holder; 
         bindingHolder.Init();
     }
 
-    public void AddNode(ICommandTranslator translator)
+    public void AddCommandTranslator(ICommandTranslator translator)
     {
-        if (inputTranslators.Contains(translator))
+        if (commandTranslators.Contains(translator))
             return;
             
-        inputTranslators.Add(translator);
+        commandTranslators.Add(translator);
     }
 
-    public void RemoveNode(ICommandTranslator translator)
+    public void RemoveCommandTranslator(ICommandTranslator translator)
     {
-        if (inputTranslators.Contains(translator))
-            inputTranslators.Remove(translator);
+        if (commandTranslators.Contains(translator))
+            commandTranslators.Remove(translator);
     }
 
     public void Tick()
     {
-        if (inputTranslators.Count == 0)
+        if (commandTranslators.Count == 0)
             return;
             
-        var commands = new List<ECommand>();
+        var commands = new Dictionary<ECommand, PressedState>();
+
         foreach (var keyBinding in bindingHolder.InputBindings)
         {
-            if (!keyBinding.Value.IsPressed)
-                commands.Remove(keyBinding.Key);
-            if (commands.Contains(keyBinding.Key))
-                continue;
             if (keyBinding.Value.IsPressed)
-                commands.Add(keyBinding.Key);
+                commands.Add(keyBinding.Key, new PressedState(keyBinding.Value.IsPressed, keyBinding.Value.IsReleased));
+            if (keyBinding.Value.IsReleased)
+                commands.Add(keyBinding.Key, new PressedState(keyBinding.Value.IsPressed, keyBinding.Value.IsReleased));
         }
             
         if (commands.Count == 0)
             return;
-
-        foreach (var inputTranslator in inputTranslators)
+              
+        foreach (var commandTranslator in commandTranslators)
+        {
             foreach (var command in commands)
-                inputTranslator.TranslateCommand(command);
+            {
+                var eCommand = command.Key;
+                var pressedState = command.Value;   
+                commandTranslator.TranslateCommand(eCommand, pressedState);
+            }
+
+        }
     }
 }

@@ -1776,7 +1776,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Begin>k__BackingField: {fileID: 8331850446012945034}
   <End>k__BackingField: {fileID: 8960787494111689333}
-  gridRowCount: 2
+  gridRowCount: 1
 --- !u!1 &5613211205116689287
 GameObject:
   m_ObjectHideFlags: 0

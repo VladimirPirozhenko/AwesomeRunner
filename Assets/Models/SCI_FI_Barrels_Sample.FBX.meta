@@ -1,0 +1,113 @@
+fileFormatVersion: 2
+guid: 5c5915e3b1cd1e9498fc34258639b7e5
+timeCreated: 1497442460
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Barrel_Base001
+    100002: Barrel_BoxGrey001
+    100004: Barrel_CartMini001
+    100006: Barrel_Holder005
+    100008: Barrel_Standard003
+    100010: Barrel_TriPlates001
+    100012: Barrel_Wide003
+    100014: //RootNode
+    100016: Plate_Grey001
+    400000: Barrel_Base001
+    400002: Barrel_BoxGrey001
+    400004: Barrel_CartMini001
+    400006: Barrel_Holder005
+    400008: Barrel_Standard003
+    400010: Barrel_TriPlates001
+    400012: Barrel_Wide003
+    400014: //RootNode
+    400016: Plate_Grey001
+    2300000: Barrel_Base001
+    2300002: Barrel_BoxGrey001
+    2300004: Barrel_CartMini001
+    2300006: Barrel_Holder005
+    2300008: Barrel_Standard003
+    2300010: Barrel_TriPlates001
+    2300012: Barrel_Wide003
+    2300014: Plate_Grey001
+    3300000: Barrel_Base001
+    3300002: Barrel_BoxGrey001
+    3300004: Barrel_CartMini001
+    3300006: Barrel_Holder005
+    3300008: Barrel_Standard003
+    3300010: Barrel_TriPlates001
+    3300012: Barrel_Wide003
+    3300014: Plate_Grey001
+    4300000: Barrel_Wide003
+    4300002: Barrel_Standard003
+    4300004: Barrel_Holder005
+    4300006: Barrel_TriPlates001
+    4300008: Barrel_BoxGrey001
+    4300010: Barrel_CartMini001
+    4300012: Barrel_Base001
+    4300014: Plate_Grey001
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 0
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

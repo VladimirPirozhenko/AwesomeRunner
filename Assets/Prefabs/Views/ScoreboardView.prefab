@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1856934114215259432}
   - component: {fileID: 1856934114215259435}
   - component: {fileID: 1856934114215259434}
-  - component: {fileID: 1856934114215259437}
+  - component: {fileID: 4920621563898199878}
   m_Layer: 5
   m_Name: ScoreboardView
   m_TagString: Untagged
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
---- !u!114 &1856934114215259437
+--- !u!114 &4920621563898199878
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -113,7 +113,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1856934114215259439}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 322f7e5970eca2243ade8350cdb958da, type: 3}
+  m_Script: {fileID: 11500000, guid: ca5aee78eb03ef54eb6010fd1883d0b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPrefab: {fileID: 8421649534968801912, guid: 4c5b587097a24ae4798ac097b4ec950d, type: 3}
+  cardPrefab: {fileID: 1010394502502236129, guid: 4c5b587097a24ae4798ac097b4ec950d, type: 3}

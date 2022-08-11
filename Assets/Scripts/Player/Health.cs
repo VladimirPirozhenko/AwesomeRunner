@@ -26,6 +26,9 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
     public int CurrentHealth { get; private set; }
     public bool IsInvincible { get; private set; }
     public float InvincibilityTime { get; private set; } //PLAYER DATA ScriptableObject
+
+    [SerializeField] private HeartsBarView healthBarView;
+
     private HealthArgs healthArgs;
     public event EventHandler<HealthArgs> OnHealthChanged = delegate { };
     public event Action OnOutOfHealth;
@@ -33,14 +36,18 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
     private int defaultMaxLives = 4;//PLAYER DATA ScriptableObject
     private float defaultInvincibilityTime = 2.5f;//PLAYER DATA ScriptableObject
     void Awake()
-    {      
+    {
+        MaxHealth = 4;
         healthArgs = new HealthArgs(CurrentHealth, MaxHealth);
-        ResetToDefault();     
+        healthBarView.CreateHealthBar(healthArgs);
+        healthBarView.Show(true);
+        ResetToDefault();
     } 
     public void TakeDamage(int amount)
     {
         CurrentHealth -= amount;
         OnHealthChanged(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
+        healthBarView.UpdateHealthBar(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
         if (CurrentHealth < 1)
         {
             OnOutOfHealth?.Invoke();
@@ -51,6 +58,7 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
         if (CurrentHealth < MaxHealth)
             CurrentHealth += amount;
         OnHealthChanged(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
+        healthBarView.UpdateHealthBar(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
     }
     public IEnumerator GrantInvincibility()
     {
@@ -64,5 +72,6 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
         CurrentHealth = MaxHealth;
         InvincibilityTime = defaultInvincibilityTime; //PlayerData/InvincibilityTimer
         OnHealthChanged(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
+        healthBarView.UpdateHealthBar(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
     }
 }

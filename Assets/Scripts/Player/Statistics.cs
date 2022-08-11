@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Statistics : MonoBehaviour,IResettable //мегюбхяхлн нр океепю
+public class Statistics : MonoBehaviour,IResettable
 {
     private float distance;
     private int coinCount;
@@ -12,7 +12,7 @@ public class Statistics : MonoBehaviour,IResettable //мегюбхяхлн нр океепю
     public event Action<int> OnCoinCountChanged = delegate { };
     public event Action<float> OnDistanceChanged = delegate { };
     public event Action<int> OnScoreCalculated = delegate { };
-    [SerializeField] PlayerHUDView PlayerHUD;
+    [SerializeField] PlayerScoreView PlayerHUD;
     private void Awake()
     {
         ResetToDefault();
