@@ -11,6 +11,7 @@ public class DeadState : PlayerState
         playerSM.PlayDeadAnimation(true);
         playerSM.VerticalDeltaPosition = 0;
         playerSM.HorizontalDeltaPosition = Vector3.zero;
+        GameSession.Instance.RestrictInputs(InputConstants.InGameCommands, true);
         //Session.ShowGameOverPopUp(true);
         // Session.SetGameOverState();
         // Stats.CalculateScore();
@@ -19,6 +20,7 @@ public class DeadState : PlayerState
     public override void OnStateExit()
     {
         playerSM.PlayDeadAnimation(false);
+        GameSession.Instance.RestrictInputs(InputConstants.InGameCommands, false);
         // Session.ShowGameOverPopUp(false);
         //playerSM.ChangeRigWeight(playerSM.RightHandRig,1);
     }

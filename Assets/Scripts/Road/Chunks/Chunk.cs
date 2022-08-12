@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum EDirection {  NORTH, SOUTH, EAST, WEST }
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Chunk : MonoBehaviour, IResettable,IPoolable<Chunk>
+public abstract class Chunk : PoolingObject<Chunk>, IResettable
 {
     protected ChunkSpawner spawner;
 
@@ -16,8 +16,7 @@ public abstract class Chunk : MonoBehaviour, IResettable,IPoolable<Chunk>
     public List<Coin> Coins { get; private set; }
     public List<Obstacle> Obstacles { get; private set; }
     public BoxCollider Collider { get; private set; }
-    public EDirection Direction { get; protected set; }
-    public BasePool<Chunk> OwningPool { private get;  set; }
+    //public BasePool<Chunk> OwningPool { private get;  set; }
 
     public readonly List<Vector3> GridPositions = new List<Vector3>();
     virtual public void Init(ChunkSpawner spawner)
@@ -78,44 +77,24 @@ public abstract class Chunk : MonoBehaviour, IResettable,IPoolable<Chunk>
     private void ChangePositionBasedOnPreviousChunk(Chunk previousChunk)
     {
         float diffBetweenBeginAndCenter = Begin.localPosition.z;
-        //transform.position = previousChunk.End.position - Begin.localPosition;
-        switch (previousChunk.Direction)
-        {
-            case EDirection.NORTH:
-                transform.position = previousChunk.End.position - Begin.localPosition;
-                break;
-            case EDirection.SOUTH:
-                transform.position = previousChunk.End.position + (diffBetweenBeginAndCenter * Vector3.forward);
-                break;
-            case EDirection.WEST:
-                transform.position = previousChunk.End.position - (Begin.localPosition.x * Vector3.right);
-                break;
-            case EDirection.EAST:
-                transform.position = previousChunk.End.position - (diffBetweenBeginAndCenter * Vector3.right);
-                break;
-        }
+        transform.position = previousChunk.End.position - Begin.localPosition;
     }
     private void ChangeRotationBasedOnPreviousChunk(Chunk previousChunk)
     {
-        switch (previousChunk.Direction)
-        {
-            case EDirection.NORTH:
-                transform.Rotate(0, 0, 0, Space.World);
-                break;
-            case EDirection.SOUTH:
-                transform.Rotate(0, -180, 0, Space.World);
-                break;
-            case EDirection.WEST:
-                transform.Rotate(0, -90, 0, Space.World);
-                break;
-            case EDirection.EAST:
-                transform.Rotate(0, -270, 0, Space.World);
-                break;
-        }
     }
 
-    public void ReturnToPool()
-    {
-        OwningPool.ReturnToPool(this);
-    }
+    //public void ReturnToPool()
+    //{
+    //    OwningPool.ReturnToPool(this);
+    //}
+
+    //public void GetOwningPool<T>(BasePool<T> pool) where T : MonoBehaviour, IPoolable
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    //public void SetOwningPool<T>(BasePool<T> pool) where T : MonoBehaviour, IPoolable
+    //{
+    //    throw new NotImplementedException();
+    //}
 }

@@ -13,7 +13,8 @@ public class StartingIdleState : PlayerState
         playerSM.PlayIdleAnimation(true);
         //Session.SetPlayingState();
         //Session.ShowGameOverPopUp(false);
-        playerTransform.position = new Vector3(0, 1, 15);
+        GameSession.Instance.RestrictInputs(InputConstants.InGameCommands,true);    
+        playerTransform.position = new Vector3(0, 0.38f, 15);
         countdownTime = 3;
         CountdownBeforeTheStart();
     }
@@ -22,6 +23,7 @@ public class StartingIdleState : PlayerState
         playerSM.PlayIdleAnimation(false);
         playerSM.HorizontalDeltaPosition = Vector3.zero;
         playerSM.VerticalDeltaPosition = 0f;
+        GameSession.Instance.RestrictInputs(InputConstants.InGameCommands, false);
     }
     public override void Tick() {}
     public async void CountdownBeforeTheStart()

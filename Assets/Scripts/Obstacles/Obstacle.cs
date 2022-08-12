@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable,IPoolable<Obstacle>
+public class Obstacle : PoolingObject<Obstacle>, IObstacle,IDamageDealer,IResettable
 {
     [field: SerializeField] public bool IsOnAllLanes { get; private set; }
     public BoxCollider Collider { get; private set; }
-    public BasePool<Obstacle> OwningPool { private get;  set; }
+    //public BasePool<Obstacle> OwningPool { private get;  set; }
 
     private void Awake()
     {
@@ -31,8 +31,8 @@ public class Obstacle : MonoBehaviour,IObstacle,IDamageDealer,IResettable,IPoola
         target.TakeDamage(amount);
     }
 
-    public void ReturnToPool()
-    {
-        OwningPool.ReturnToPool(this);
-    }
+    //public void ReturnToPool()
+    //{
+    //    OwningPool.ReturnToPool(this);
+    //}
 }

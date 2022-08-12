@@ -34,10 +34,15 @@ public class GameSession : MonoBehaviour,IResettable
     public void PauseSession(bool isPaused)
     {
         Time.timeScale = isPaused ?  0 : 1;
-        List<ECommand> commands = new List<ECommand>();
-        ECommand[] commandRange = { ECommand.LEFT,ECommand.RIGHT,ECommand.UP,ECommand.DOWN,ECommand.SHOOT};
-        commands.AddRange(commandRange);
-        InputTranslator.RestictTranslation(commands,isPaused);
+        //List<ECommand> commands = new List<ECommand>();
+        //ECommand[] commandRange = { ECommand.LEFT,ECommand.RIGHT,ECommand.UP,ECommand.DOWN,ECommand.SHOOT};
+        //commands.AddRange(commandRange);
+        RestrictInputs(InputConstants.InGameCommands,isRestricted: isPaused);
+    }
+
+    public void RestrictInputs(List<ECommand> commands,bool isRestricted)
+    {
+        InputTranslator.RestictTranslation(commands, isRestricted);
     }
     public void RestartSession()
     {

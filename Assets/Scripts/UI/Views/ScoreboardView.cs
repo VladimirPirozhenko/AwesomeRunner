@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ScoreboardView : BaseView
 {
-    [SerializeField] private Button closeButton;
+    [SerializeField] private Button backButton;
     [SerializeField] private PlayerScoreboardCard cardPrefab;
     private VerticalLayoutGroup layoutGroup;
     private readonly Dictionary<string,PlayerScoreboardCard> playerCards = new Dictionary<string, PlayerScoreboardCard>();
@@ -13,7 +13,7 @@ public class ScoreboardView : BaseView
     {
         base.Init();
         layoutGroup = GetComponentInChildren<VerticalLayoutGroup>();    
-        closeButton.onClick.AddListener(() =>
+        backButton.onClick.AddListener(() =>
         {
             Show(false);
             ViewManager.Instance.Show<PausedView>(true);

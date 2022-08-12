@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class Coin : MonoBehaviour, ICollectable,IResettable
+public class Coin : PoolingObject<Coin>, ICollectable,IResettable
 {
     [SerializeField] private int coinValue;
 
