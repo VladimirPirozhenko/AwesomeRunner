@@ -53,6 +53,18 @@ public class ViewManager : MonoBehaviour
         }
     }
 
+    public bool IsActive<T>() where T : BaseView
+    {
+        foreach (var view in views)
+        {
+            if (view is T)
+            {
+                return view.IsActive();
+            }
+        }
+        return false;
+    }
+
     public void Add(BaseView view,bool isActiveByDefault = true)
     {
         view.Init();
@@ -64,19 +76,5 @@ public class ViewManager : MonoBehaviour
     {
         views.Remove(view);
         view.Destroy(); 
-    }
-
-    public bool TryGetView<T>(out T baseView) where T : BaseView
-    {
-        foreach (var view in views)
-        {
-            if (view is T)
-            {
-               baseView = (T)view;
-               return true;
-            }  
-        }
-        baseView = null;    
-        return false;
     }
 }

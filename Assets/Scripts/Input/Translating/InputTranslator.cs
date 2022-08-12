@@ -4,7 +4,6 @@ public class InputTranslator<T> where T : IBinding
 {
     private List<ICommandTranslator> commandTranslators;
     private IBindingHolder<T> bindingHolder;
-    private bool isTranslating = true;
 
     public void Init(IBindingHolder<T> holder)
     {
@@ -12,6 +11,8 @@ public class InputTranslator<T> where T : IBinding
         bindingHolder = holder; 
         bindingHolder.Init();
     }
+
+
 
     public void AddCommandTranslator(ICommandTranslator translator)
     {
@@ -37,10 +38,21 @@ public class InputTranslator<T> where T : IBinding
             }
         }     
     }
+
+    public bool IsTranslationResticted(List<ECommand> commands)
+    {
+        foreach (ECommand command in commands)
+        {
+            if (bindingHolder.InputBindings.ContainsKey(command))
+            {
+                return bindingHolder.InputBindings[command].IsRestricted;
+            }
+        }
+        return false;   
+    }
+
     public void Tick()
     {
-        if (!isTranslating)
-            return;
         if (commandTranslators.Count == 0)
             return;
             

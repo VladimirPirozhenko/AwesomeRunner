@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Pause : MonoBehaviour,ICommandTranslator
 {
-    private bool isOpened = false;
     private void Start()
     {
         GameSession.Instance.AddCommandTranslator(this);    
@@ -17,7 +16,8 @@ public class Pause : MonoBehaviour,ICommandTranslator
             switch (command)
             {
                 case ECommand.OPEN_PAUSE_MENU:
-                    isOpened = isOpened ? false : true;
+                    bool isOpened = ViewManager.Instance.IsActive<PausedView>();
+                    isOpened = !isOpened;    
                     ViewManager.Instance.Show<PausedView>(isOpened);
                     GameSession.Instance.PauseSession(isOpened);
                     break;

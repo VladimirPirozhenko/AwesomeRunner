@@ -16,10 +16,12 @@ public class GameSession : MonoBehaviour,IResettable
         Instance = this;
         Init();
     }
+
     private void Update()
     {
         InputTranslator.Tick();
     }
+
     private void Init()
     {
         InputTranslator = new InputTranslator<KeyBinding>();
@@ -31,12 +33,12 @@ public class GameSession : MonoBehaviour,IResettable
     {
         InputTranslator.AddCommandTranslator(translator);   
     }
+
     public void PauseSession(bool isPaused)
     {
         Time.timeScale = isPaused ?  0 : 1;
-        //List<ECommand> commands = new List<ECommand>();
-        //ECommand[] commandRange = { ECommand.LEFT,ECommand.RIGHT,ECommand.UP,ECommand.DOWN,ECommand.SHOOT};
-        //commands.AddRange(commandRange);
+        if (InputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
+            return;
         RestrictInputs(InputConstants.InGameCommands,isRestricted: isPaused);
     }
 
