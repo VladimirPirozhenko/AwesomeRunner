@@ -47,7 +47,7 @@ public class Player : MonoBehaviour,IResettable, ICommandTranslator
 
     private void Awake()
     {
-        GameSession.Instance.InputTranslator.AddCommandTranslator(this);
+        GameSession.Instance.AddCommandTranslator(this);
         animator = GetComponent<Animator>();
         if (animator)
             PlayerAnimator = new PlayerAnimator(animator);
@@ -128,37 +128,6 @@ public class Player : MonoBehaviour,IResettable, ICommandTranslator
         LaneSystem.ResetToDefault();
         Physics.SyncTransforms();
         ReloadAnimator();
-    }
-    public void RestartSession()
-    { 
-        SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
-        ResetToDefault();
-    }
-    public void GoToMainMenu()
-    {     
-        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
-        ResetToDefault();
-    }
-
-    public void TranslateCommand(ECommand command)
-    {
-        switch (command)
-        {
-            case ECommand.RIGHT:
-                PlayerStateMachine.IncreaseTargetLane();
-                break;
-            case ECommand.LEFT:
-                PlayerStateMachine.DecreaseTargetLane();
-                break;
-            case ECommand.UP:
-                PlayerStateMachine.SetState(PlayerStateMachine.PlayerJumpState);
-                break;
-            case ECommand.DOWN:
-                PlayerStateMachine.SetState(PlayerStateMachine.PlayerSlideState);
-                break;
-            default:
-                break;
-        }
     }
 
     public void TranslateCommand(ECommand command, PressedState state)

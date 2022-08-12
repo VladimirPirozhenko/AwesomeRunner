@@ -3,15 +3,8 @@ using UnityEngine;
 
 public class ScoreboardView : BaseView
 {
-    //public static ScoreboardView Instance { get; private set; }
-
-    [SerializeField] PlayerScoreboardCard cardPrefab;
+    [SerializeField] private PlayerScoreboardCard cardPrefab;
     private readonly Dictionary<string,PlayerScoreboardCard> playerCards = new Dictionary<string, PlayerScoreboardCard>();
-
-    private void Awake()
-    {
-        //Instance = this;    
-    }
 
     public void AddPlayerCards(List<PlayerScoreboardCardData> cardsData)
     {

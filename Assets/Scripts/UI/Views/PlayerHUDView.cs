@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]    
-public class PlayerScoreView : BaseView
+public class PlayerHUDView : BaseView
 {
     [SerializeField] private TMP_Text scoreText;
     public override void Init()

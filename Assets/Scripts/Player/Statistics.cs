@@ -12,7 +12,7 @@ public class Statistics : MonoBehaviour,IResettable
     public event Action<int> OnCoinCountChanged = delegate { };
     public event Action<float> OnDistanceChanged = delegate { };
     public event Action<int> OnScoreCalculated = delegate { };
-    [SerializeField] PlayerScoreView PlayerHUD;
+    [SerializeField] private PlayerHUDView PlayerHUD;
     private void Awake()
     {
         ResetToDefault();

@@ -11,7 +11,6 @@ public struct PlayerScoreboardCardData
         this.playerScore = playerScore;    
     }
 }
-
 public class PlayerScoreboardCard : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerName;

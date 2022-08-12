@@ -7,5 +7,6 @@ public enum ECommand
     UP = 3,
     DOWN = 4,
     OPEN_SCOREBOARD = 5,
-    SHOOT = 6
+    SHOOT = 6,
+    OPEN_PAUSE_MENU = 7
 }

@@ -24,8 +24,6 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
 {
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
-    public bool IsInvincible { get; private set; }
-    public float InvincibilityTime { get; private set; } //PLAYER DATA ScriptableObject
 
     [SerializeField] private HeartsBarView healthBarView;
 
@@ -34,7 +32,6 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
     public event Action OnOutOfHealth;
 
     private int defaultMaxLives = 4;//PLAYER DATA ScriptableObject
-    private float defaultInvincibilityTime = 2.5f;//PLAYER DATA ScriptableObject
     void Awake()
     {
         MaxHealth = 4;
@@ -60,17 +57,10 @@ public class Health : MonoBehaviour, IDamageable,IHealable, IResettable
         OnHealthChanged(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
         healthBarView.UpdateHealthBar(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
     }
-    public IEnumerator GrantInvincibility()
-    {
-        IsInvincible = true;
-        yield return new WaitForSeconds(InvincibilityTime);
-        IsInvincible = false;
-    }
     public void ResetToDefault()
     {
         MaxHealth = defaultMaxLives; // PlayerData.MaxHealth
         CurrentHealth = MaxHealth;
-        InvincibilityTime = defaultInvincibilityTime; //PlayerData/InvincibilityTimer
         OnHealthChanged(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
         healthBarView.UpdateHealthBar(this, healthArgs.GetUpdatedArgs(CurrentHealth, MaxHealth));
     }
