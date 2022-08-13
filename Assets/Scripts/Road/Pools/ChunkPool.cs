@@ -13,8 +13,7 @@ public class ChunkPool : BasePool<Chunk>
     }
 
     protected override void ReturnAction(Chunk chunk)
-    {
-        base.ReturnAction(chunk);
+    {  
         chunk.ResetToDefault();
         chunk.Coins.Clear();
         foreach (var obstacle in chunk.Obstacles)
@@ -22,5 +21,6 @@ public class ChunkPool : BasePool<Chunk>
             obstacle.ResetToDefault();
         }
         chunk.Obstacles.Clear();
+        base.ReturnAction(chunk);
     }
 }

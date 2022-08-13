@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class Obstacle : PoolingObject<Obstacle>, IObstacle,IDamageDealer,IResettable
+public class Obstacle : PoolingObject, IObstacle,IDamageDealer,IResettable
 {
     [field: SerializeField] public bool IsOnAllLanes { get; private set; }
     public BoxCollider Collider { get; private set; }
@@ -18,7 +18,7 @@ public class Obstacle : PoolingObject<Obstacle>, IObstacle,IDamageDealer,IResett
         transform.localPosition = Vector3.zero;
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
-        gameObject.transform.SetParent(OwningPool.transform);
+        //gameObject.transform.SetParent(OwningPool.transform);
         ReturnToPool();
     }
     public void Impact()

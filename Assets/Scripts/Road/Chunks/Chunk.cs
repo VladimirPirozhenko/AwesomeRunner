@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum EDirection {  NORTH, SOUTH, EAST, WEST }
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Chunk : PoolingObject<Chunk>, IResettable
+public abstract class Chunk : PoolingObject, IResettable
 {
     protected ChunkSpawner spawner;
 
