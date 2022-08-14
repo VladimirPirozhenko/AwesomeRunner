@@ -19,7 +19,7 @@ public class GameSession : MonoBehaviour,IResettable
 
     private void Update()
     {
-        InputTranslator.Tick();
+       InputTranslator.Tick();
     }
 
     private void Init()

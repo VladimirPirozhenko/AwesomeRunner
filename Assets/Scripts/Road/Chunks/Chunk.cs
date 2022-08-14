@@ -12,13 +12,11 @@ public abstract class Chunk : PoolingObject<Chunk>, IResettable
     [field: SerializeField] public Transform Begin { get;  private set; } 
     [field: SerializeField] public Transform End { get; private set; }
 
-    [SerializeField] private int gridRowCount;
     public List<Coin> Coins { get; private set; }
     public List<Obstacle> Obstacles { get; private set; }
     public BoxCollider Collider { get; private set; }
-    //public BasePool<Chunk> OwningPool { private get;  set; }
+    public Grid Grid { get; private set; }
 
-    public readonly List<Vector3> GridPositions = new List<Vector3>();
     virtual public void Init(ChunkSpawner spawner)
     {
         this.spawner = spawner;
@@ -28,7 +26,6 @@ public abstract class Chunk : PoolingObject<Chunk>, IResettable
         Collider = GetComponent<BoxCollider>();
         Coins = new List<Coin>();   
         Obstacles = new List<Obstacle>();
-
         InitializeGrid();
     }
 
@@ -36,18 +33,7 @@ public abstract class Chunk : PoolingObject<Chunk>, IResettable
     {
         Vector3 chunkLengthVector = (End.position - Begin.position);
         float chunkLength = chunkLengthVector.magnitude;
-        float rowLength = chunkLength / gridRowCount;
-        Debug.DrawLine(Vector3.zero, new Vector3(0, 5, 0), Color.red);
-        foreach (var lane in LaneSystem.Instance.Lanes)
-        {
-            float lanePosition = lane * LaneSystem.Instance.LaneWidth;
-            for (int i = 0; i < gridRowCount; i++)
-            {
-                Vector3 gridPosition = new Vector3(lanePosition, 0, i * rowLength);
-                Debug.DrawLine(gridPosition, Vector3.up* 100,Color.red,500);    
-                GridPositions.Add(gridPosition);
-            }
-        }
+        Grid = new Grid(chunkLength);
     }
 
     public void ResetToDefault()
@@ -82,19 +68,4 @@ public abstract class Chunk : PoolingObject<Chunk>, IResettable
     private void ChangeRotationBasedOnPreviousChunk(Chunk previousChunk)
     {
     }
-
-    //public void ReturnToPool()
-    //{
-    //    OwningPool.ReturnToPool(this);
-    //}
-
-    //public void GetOwningPool<T>(BasePool<T> pool) where T : MonoBehaviour, IPoolable
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //public void SetOwningPool<T>(BasePool<T> pool) where T : MonoBehaviour, IPoolable
-    //{
-    //    throw new NotImplementedException();
-    //}
 }

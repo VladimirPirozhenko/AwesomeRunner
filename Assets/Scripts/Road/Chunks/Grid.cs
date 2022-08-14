@@ -1,21 +1,28 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.Road.Chunks
+public class Grid 
 {
-    public class Grid : MonoBehaviour
+    public readonly List<Vector3> GridPositions = new List<Vector3>();
+    private int gridRowCount;
+
+    public Grid(float gridLength)
     {
-
-        // Use this for initialization
-        void Start()
+        gridRowCount = 1;
+        float rowLength = gridLength / gridRowCount;
+        foreach (var lane in LaneSystem.Instance.Lanes)
         {
-
+            float lanePosition = lane * LaneSystem.Instance.LaneWidth;
+            for (int i = 0; i < gridRowCount; i++)
+            {
+                Vector3 gridPosition = new Vector3(lanePosition, 0, i * rowLength);
+                GridPositions.Add(gridPosition);
+            }
         }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+    }
+    public Vector3 GetRandomPosition()
+    {
+       return GridPositions.GetRandomElement();   
     }
 }

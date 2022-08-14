@@ -9,7 +9,7 @@ public class JumpState : MovingState
     private float expiredTime = 0;
     private float previousDeltaY = 0;
     private float jumpHeight;
-    private float internalJumpTime = 0.55f;
+    private float internalJumpTime = 0.45f;
     public JumpState(PlayerStateMachine playerStateMachine, AnimationCurve curve) : base(playerStateMachine)
     {
         deltaYCurve = curve;
@@ -41,9 +41,7 @@ public class JumpState : MovingState
         previousDeltaY = deltaY;
         playerSM.VerticalDeltaPosition = diff;
         if (jumpProgress > internalJumpTime)
-        {
-            expiredTime = 0;
-            playerSM.VerticalDeltaPosition = 0;
+        {  
             playerSM.SetState(playerSM.PlayerGroundState);
         }
     }
@@ -51,6 +49,7 @@ public class JumpState : MovingState
     {
         previousDeltaY = 0;
         expiredTime = 0;
+        playerSM.VerticalDeltaPosition = 0;
         playerSM.VerticalDeltaPosition = 0;
     }
 }

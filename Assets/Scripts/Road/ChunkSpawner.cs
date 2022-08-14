@@ -18,11 +18,7 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
         waitBeforeSpawn = new WaitForSeconds(spawnDelay);
         SpawnInitialChunks();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.S))
-            Spawn();
-    }
+
     public void SpawnInitialChunks()
     {
         lastChunk = chunkPool.GetFromPool();
