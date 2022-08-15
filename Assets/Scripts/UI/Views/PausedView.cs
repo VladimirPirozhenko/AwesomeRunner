@@ -13,8 +13,9 @@ public class PausedView : BaseView
 	{
         resumeButton.onClick.AddListener(() =>
         {
-            GameSession.Instance.PauseSession(false);
             Show(false);
+            GameSession.Instance.PauseSession(false);
+            
         });
 
         scoreboardButton.onClick.AddListener(() =>

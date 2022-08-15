@@ -5,12 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class GameSession : MonoBehaviour,IResettable
 {
-    private InputTranslator<KeyBinding> InputTranslator;
-
-    public static GameSession Instance { get; private set; }
+    public static GameSession Instance { get; private set; } 
 
     [SerializeField] private Player currentPlayer;
 
+    private InputTranslator<KeyBinding> InputTranslator;
+
+    private bool isSessionPaused = false;
+    private bool isInputAlreadyRestricted = false;
     private void Awake()
     {
         Instance = this;
@@ -34,11 +36,25 @@ public class GameSession : MonoBehaviour,IResettable
         InputTranslator.AddCommandTranslator(translator);   
     }
 
+  
     public void PauseSession(bool isPaused)
     {
-        Time.timeScale = isPaused ?  0 : 1;
-        if (InputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
+        Time.timeScale = isPaused ? 0 : 1;
+        if (!isSessionPaused && InputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
+        {
+            isInputAlreadyRestricted = true;
+            isSessionPaused = isPaused;
             return;
+        }
+        if (!InputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
+        {
+            isInputAlreadyRestricted = false;
+        }
+        isSessionPaused = isPaused;
+        if (isInputAlreadyRestricted)
+        {
+            return;
+        }   
         RestrictInputs(InputConstants.InGameCommands,isRestricted: isPaused);
     }
 

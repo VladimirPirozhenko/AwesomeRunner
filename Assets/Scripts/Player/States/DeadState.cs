@@ -9,6 +9,7 @@ public class DeadState : PlayerState
     public override void OnStateEnter()
     {
         playerSM.PlayDeadAnimation(true);
+        playerSM.PlayerTransform.position = new Vector3(playerSM.PlayerTransform.position.x,0.38f, playerSM.PlayerTransform.position.z);
         playerSM.VerticalDeltaPosition = 0;
         playerSM.HorizontalDeltaPosition = Vector3.zero;
         GameSession.Instance.RestrictInputs(InputConstants.InGameCommands, true);

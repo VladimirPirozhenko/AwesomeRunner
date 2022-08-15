@@ -12,8 +12,6 @@ public class InputTranslator<T> where T : IBinding
         bindingHolder.Init();
     }
 
-
-
     public void AddCommandTranslator(ICommandTranslator translator)
     {
         if (commandTranslators.Contains(translator))
