@@ -8,8 +8,7 @@ public class GameSession : MonoBehaviour,IResettable
     public static GameSession Instance { get; private set; } 
 
     [SerializeField] private Player currentPlayer;
-
-    private InputTranslator<KeyBinding> InputTranslator;
+    private IInputTranslator inputTranslator;
 
     private bool isSessionPaused = false;
     private bool isInputAlreadyRestricted = false;
@@ -21,32 +20,39 @@ public class GameSession : MonoBehaviour,IResettable
 
     private void Update()
     {
-       InputTranslator.Tick();
+       inputTranslator.Tick();
     }
 
     private void Init()
     {
-        InputTranslator = new InputTranslator<KeyBinding>();
-        IBindingHolder<KeyBinding> holder = new KeyBindingHolder();
-        InputTranslator.Init(holder);
+        if (ApplicationUtil.platform == RuntimePlatform.Android || ApplicationUtil.platform == RuntimePlatform.IPhonePlayer)
+        {
+            IBindingHolder<TouchBinding> touchHolder = new TouchBindingHolder();
+            inputTranslator = new InputTranslator<TouchBinding>(touchHolder);
+        }
+        else
+        {
+            IBindingHolder<KeyBinding> keyHolder = new KeyBindingHolder();
+            inputTranslator = new InputTranslator<KeyBinding>(keyHolder);
+        }
     }
 
     public void AddCommandTranslator(ICommandTranslator translator)
     {
-        InputTranslator.AddCommandTranslator(translator);   
+        inputTranslator.AddCommandTranslator(translator);
     }
 
   
     public void PauseSession(bool isPaused)
     {
         Time.timeScale = isPaused ? 0 : 1;
-        if (!isSessionPaused && InputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
+        if (!isSessionPaused && inputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
         {
             isInputAlreadyRestricted = true;
             isSessionPaused = isPaused;
             return;
         }
-        if (!InputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
+        if (!inputTranslator.IsTranslationResticted(InputConstants.InGameCommands))
         {
             isInputAlreadyRestricted = false;
         }
@@ -60,13 +66,15 @@ public class GameSession : MonoBehaviour,IResettable
 
     public void RestrictInputs(List<ECommand> commands,bool isRestricted)
     {
-        InputTranslator.RestictTranslation(commands, isRestricted);
+        inputTranslator.RestictTranslation(commands, isRestricted);
     }
+
     public void RestartSession()
     {
         SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
         ResetToDefault();
     }
+
     public void GoToMainMenu()
     {
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);

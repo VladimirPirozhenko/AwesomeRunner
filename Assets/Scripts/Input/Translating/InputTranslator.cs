@@ -1,16 +1,34 @@
 ﻿
 using System.Collections.Generic;
-public class InputTranslator<T> where T : IBinding
+
+public interface IInputTranslator
+{
+    //public void Init(IBindingHolder<T> holder);
+    public void AddCommandTranslator(ICommandTranslator translator);
+    public void RemoveCommandTranslator(ICommandTranslator translator);
+    public void RestictTranslation(List<ECommand> commands, bool isRestricted);
+
+    public bool IsTranslationResticted(List<ECommand> commands);
+
+    public void Tick();
+}
+public class InputTranslator<T> : IInputTranslator where T : IBinding
 {
     private List<ICommandTranslator> commandTranslators;
     private IBindingHolder<T> bindingHolder;
 
-    public void Init(IBindingHolder<T> holder)
+    public InputTranslator(IBindingHolder<T> holder)
     {
         commandTranslators = new List<ICommandTranslator>();
-        bindingHolder = holder; 
+        bindingHolder = holder;
         bindingHolder.Init();
     }
+    //public void Init(IBindingHolder<T> holder)
+    //{
+    //    commandTranslators = new List<ICommandTranslator>();
+    //    bindingHolder = holder; 
+    //    bindingHolder.Init();
+    //}
 
     public void AddCommandTranslator(ICommandTranslator translator)
     {
@@ -60,10 +78,10 @@ public class InputTranslator<T> where T : IBinding
         {
             if (keyBinding.Value.IsRestricted)
                 continue;
-            if (keyBinding.Value.IsPressed)
-                commands.Add(keyBinding.Key, new PressedState(keyBinding.Value.IsPressed, keyBinding.Value.IsReleased));
-            if (keyBinding.Value.IsReleased)
-                commands.Add(keyBinding.Key, new PressedState(keyBinding.Value.IsPressed, keyBinding.Value.IsReleased));
+            if (keyBinding.Value.IsPressed())
+                commands.Add(keyBinding.Key, new PressedState(true, false));
+            if (keyBinding.Value.IsReleased())
+                commands.Add(keyBinding.Key, new PressedState(false, true));
         }
             
         if (commands.Count == 0)
