@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class HeartsBarView : BaseView
 {
     [SerializeField] private HeartImage heartImage;
-    [SerializeField] private Vector2 heartSize;
-    [SerializeField] private int gapBetweenHearts;
     private List<HeartImage> heartImages;
 
     public void CreateHealthBar(HealthArgs args)

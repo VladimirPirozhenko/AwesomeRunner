@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: STT_Found
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ValidKeywords:
-  - _METALLICGLOSSMAP
-  - _NORMALMAP
+  m_Shader: {fileID: 4800000, guid: 73ef4de7c429719438a73d771100db7c, type: 3}
+  m_ValidKeywords: []
   m_InvalidKeywords:
+  - _METALLICGLOSSMAP
   - _METALLICSPECGLOSSMAP
+  - _NORMALMAP
   m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

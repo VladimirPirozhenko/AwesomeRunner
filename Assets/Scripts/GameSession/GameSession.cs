@@ -18,6 +18,10 @@ public class GameSession : MonoBehaviour,IResettable
         Init();
     }
 
+    private void Start()
+    {
+        Application.targetFrameRate = 60;
+    }
     private void Update()
     {
        inputTranslator.Tick();
