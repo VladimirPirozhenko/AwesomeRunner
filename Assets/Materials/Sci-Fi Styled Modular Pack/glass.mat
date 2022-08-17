@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: glass
-  m_Shader: {fileID: 4800000, guid: 73ef4de7c429719438a73d771100db7c, type: 3}
+  m_Shader: {fileID: 4800000, guid: 979d9542a662ed2439a160339d0432e6, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _ALPHAPREMULTIPLY_ON
@@ -58,6 +58,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SmoothnessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BumpScale: 1
@@ -77,6 +81,6 @@ Material:
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0.102941155, g: 0.102941155, b: 0.102941155, a: 0.247}
+    - _Color: {r: 0.11605554, g: 0.1476411, b: 0.1509434, a: 0.36078432}
     - _EmissionColor: {r: 0.032, g: 0.032, b: 0.032, a: 1}
   m_BuildTextureStacks: []

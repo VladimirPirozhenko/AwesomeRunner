@@ -160,6 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <IsOnAllLanes>k__BackingField: 0
+  <IsInevitable>k__BackingField: 1
 --- !u!1 &5981214763097122984
 GameObject:
   m_ObjectHideFlags: 0

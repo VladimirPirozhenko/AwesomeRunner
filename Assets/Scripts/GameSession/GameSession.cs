@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(WorldCurver))]  
 public class GameSession : MonoBehaviour,IResettable
 {
     public static GameSession Instance { get; private set; } 
 
     [SerializeField] private Player currentPlayer;
+    private WorldCurver curver;
     private IInputTranslator inputTranslator;
 
     private bool isSessionPaused = false;
@@ -16,15 +18,20 @@ public class GameSession : MonoBehaviour,IResettable
     {
         Instance = this;
         Init();
+        curver = GetComponent<WorldCurver>();
     }
 
     private void Start()
     {
-        Application.targetFrameRate = 60;
+        if (ApplicationUtil.platform == RuntimePlatform.Android || ApplicationUtil.platform == RuntimePlatform.IPhonePlayer)
+        {
+            //Application.targetFrameRate = 60;
+        }
     }
     private void Update()
     {
        inputTranslator.Tick();
+       curver.Tick();
     }
 
     private void Init()
