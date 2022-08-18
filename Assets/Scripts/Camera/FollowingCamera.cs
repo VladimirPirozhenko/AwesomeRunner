@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]  
 public class FollowingCamera : MonoBehaviour
 {
     [SerializeField] private Transform target;
@@ -10,9 +11,11 @@ public class FollowingCamera : MonoBehaviour
 
     private Transform camTransform;
     private Vector3 velocity = Vector3.one;
+    private Camera cam;
     private void Awake()
     {
         camTransform = transform;
+        cam = GetComponent<Camera>();
     }
     private void LateUpdate()
     {

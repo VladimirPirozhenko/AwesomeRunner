@@ -16,7 +16,7 @@ public class WorldCurver : MonoBehaviour
 		curveStrengthXID = Shader.PropertyToID("_CurveStrength_x");
 	}
 
-	void Update()
+	public void Tick()
 	{
 		Shader.SetGlobalFloat(curveStrengthYID, curveStrengthY);
 		Shader.SetGlobalFloat(curveStrengthXID, curveStrengthX);
