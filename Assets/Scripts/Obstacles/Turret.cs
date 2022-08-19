@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Turret : MonoBehaviour, IObstacle, IDamageDealer, IResettable
+public class Turret : PoolingObject<Turret>, IObstacle, IDamageDealer, IResettable
 {
     public void DealDamage(IDamageable target, int amount)
     {

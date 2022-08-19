@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
 {
     [field: SerializeField] public int Capacity { get; private set; }
