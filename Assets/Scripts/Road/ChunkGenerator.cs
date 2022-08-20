@@ -1,3 +1,4 @@
+using Pools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class ChunkGenerator : MonoBehaviour
         if (ObstaclePools.IsEmpty())
             return chunkToFill;
         var obstaclePool = ObstaclePools.GetRandomElement();
-        var obstacle = obstaclePool.GetFromPool();
+        var obstacle = obstaclePool.Spawn();
         chunkToFill.Obstacles.Add(obstacle);    
         obstacle.transform.SetParent(chunkToFill.transform, true);
         obstacle.transform.localPosition = chunkToFill.Grid.GetRandomPosition();

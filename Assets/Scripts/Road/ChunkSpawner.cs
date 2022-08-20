@@ -21,8 +21,8 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
 
     public void SpawnInitialChunks()
     {
-        lastChunk = chunkPool.GetFromPool();
-        for (int i = 0; i < chunkPool.Capacity / 2; i++)
+        lastChunk = chunkPool.Spawn();
+        for (int i = 0; i < chunkPool.InitialCapacity; i++)
         {
             Spawn();
         }
@@ -30,7 +30,8 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
 
     public void Spawn()
     {
-        Chunk newChunk = chunkPool.GetFromPool();
+        Chunk newChunk = chunkPool.Spawn();
+        newChunk.gameObject.SetActive(true);   
         newChunk.ChangeTransformBasedOnPreviousChunk(lastChunk);
         chunkGenerator.Generate(newChunk);
         lastChunk = newChunk;
