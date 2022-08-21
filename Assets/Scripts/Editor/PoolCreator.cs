@@ -9,7 +9,7 @@ public class PoolCreator
 {
     private string targetClassName;
     private string poolNamespaceName;
-    private bool pendingToGeneration = false;
+    //private bool pendingToGeneration = false;
     private int poolCapacity = 10;
     private GameObject poolingObject;
     //private void OnEnable()

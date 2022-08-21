@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EDirection {  NORTH, SOUTH, EAST, WEST }
 [RequireComponent(typeof(BoxCollider))]
 public abstract class Chunk : PoolingObject<Chunk>, IResettable
 {
@@ -20,13 +19,22 @@ public abstract class Chunk : PoolingObject<Chunk>, IResettable
     virtual public void Init(ChunkSpawner spawner)
     {
         this.spawner = spawner;
+        Collider = GetComponent<BoxCollider>();
+        Coins = new List<Coin>();
+        Obstacles = new List<Obstacle>();
+        InitializeGrid();
     }
     private void Awake()
     {
-        Collider = GetComponent<BoxCollider>();
-        Coins = new List<Coin>();   
-        Obstacles = new List<Obstacle>();
-        InitializeGrid();
+        //Collider = GetComponent<BoxCollider>();
+        //Coins = new List<Coin>();   
+        //Obstacles = new List<Obstacle>();
+        //InitializeGrid();
+    }
+
+    public void Start()
+    {
+        //InitializeGrid();
     }
 
     private void InitializeGrid()

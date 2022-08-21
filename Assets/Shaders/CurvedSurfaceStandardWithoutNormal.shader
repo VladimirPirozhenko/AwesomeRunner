@@ -6,7 +6,6 @@ Shader "Custom/CurvedSurfaceStandard"
     {
         _Color ("Color", Color) = (1,1,1,1)
         _MainTex ("Albedo", 2D) = "white" {}
-        _BumpMap("Normal Map", 2D) = "bump" {}
         _OcclusionMap("Occlusion Map", 2D) = "white" {}
         _SmoothnessMap("Smoothness Map", 2D) = "black" {}
         _EmissionMap("Emission Map", 2D) = "white" {}
@@ -27,7 +26,6 @@ Shader "Custom/CurvedSurfaceStandard"
             // Use shader model 3.5 target, to get nicer looking lighting and to get emission map to work
             #pragma target 3.5
             sampler2D MainTex;
-            sampler2D _BumpMap;
             sampler2D _OcclusionMap;
             sampler2D _SmoothnessMap;
             sampler2D _EmissionMap;
@@ -39,7 +37,6 @@ Shader "Custom/CurvedSurfaceStandard"
             struct Input
             {
                 float2 uv_MainTex;
-                float2 uv_BumpMap;
                 float2 uv_SmoothnessMap;
                 float2 uv_OcclusionMap;
                 float2 uv_EmissionMap;
@@ -65,7 +62,6 @@ Shader "Custom/CurvedSurfaceStandard"
             {
                 fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
                 o.Albedo = c.rgb;
-                o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
                 o.Occlusion = tex2D(_OcclusionMap, IN.uv_OcclusionMap).rgb;
                 o.Emission = tex2D(_EmissionMap, IN.uv_EmissionMap).rgb * _EmissionColor;
                 // Metallic and smoothness come from slider variables

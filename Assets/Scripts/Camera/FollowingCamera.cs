@@ -11,19 +11,36 @@ public class FollowingCamera : MonoBehaviour
 
     private Transform camTransform;
     private Vector3 velocity = Vector3.one;
+    private Vector3 defaultTargetPosition;
+    private Quaternion defaultTargetRotation;
     private Camera cam;
     private void Awake()
     {
         camTransform = transform;
         cam = GetComponent<Camera>();
     }
+
+    private void Start()
+    {
+        defaultTargetPosition = transform.position;
+        defaultTargetRotation = transform.rotation;  
+    }
+
     private void LateUpdate()
     {
         SmoothFollow();
     }
     void SmoothFollow()
     {
-        Vector3 toPos = target.position + (target.rotation * defaultDistance);
+
+        Vector3 moveVector = new Vector3(target.position.x, target.position.y, target.position.z);
+        //new Vector3(xAmount, 0, zAmount);
+     
+        Quaternion rotationVector = Quaternion.Euler(target.rotation.y, target.rotation.y, defaultTargetRotation.z);
+        float curveX = GameSession.Instance.Curver.CurveStrengthX;
+        camTransform.rotation = target.rotation;
+        Vector3 toPos = moveVector + (target.rotation * defaultDistance);
+        //Vector3 toPos = target.position + (target.rotation * defaultDistance);
         Vector3 curPos = Vector3.SmoothDamp(camTransform.position, toPos, ref velocity, distanceDamp);
         camTransform.position = curPos;
         camTransform.LookAt(target, target.up);

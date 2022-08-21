@@ -6,19 +6,19 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(WorldCurver))]  
 public class GameSession : MonoBehaviour,IResettable
 {
-    public static GameSession Instance { get; private set; } 
-
     [SerializeField] private Player currentPlayer;
-    private WorldCurver curver;
+    public static GameSession Instance { get; private set; } 
+    public WorldCurver Curver { get; private set; }
     private IInputTranslator inputTranslator;
 
     private bool isSessionPaused = false;
     private bool isInputAlreadyRestricted = false;
+
     private void Awake()
     {
         Instance = this;
         Init();
-        curver = GetComponent<WorldCurver>();
+        Curver = GetComponent<WorldCurver>();
     }
 
     private void Start()
@@ -31,7 +31,9 @@ public class GameSession : MonoBehaviour,IResettable
     private void Update()
     {
        inputTranslator.Tick();
-       curver.Tick();
+       Curver.Tick();
+      // curver.SinCurveX();
+      // Curver.SinCurveY();
     }
 
     private void Init()

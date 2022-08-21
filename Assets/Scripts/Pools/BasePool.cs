@@ -3,23 +3,22 @@ using UnityEngine;
 public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
 {
     [SerializeField] private int capacity;
-    [SerializeField] private bool isActiveByDefault;
     [SerializeField] private T prefab; 
     public int Capacity { get { return pool.Capacity; } private set { capacity = value; } }
     public int InitialCapacity { get; private set; }
 
-    private ObjectPool<T> pool; 
+    private ObjectPool<T> pool;
 
     private void Awake()
     {
-        pool = new ObjectPool<T>(CreateAction, GetAction, ReturnAction, DestroyAction,capacity,isActiveByDefault);
-        InitialCapacity = capacity; 
+        pool = new ObjectPool<T>(CreateAction, GetAction, ReturnAction, DestroyAction, capacity);
+        InitialCapacity = capacity;
     }
 
     protected virtual T CreateAction()
     {
         T instance = Instantiate(prefab);
-        instance.transform.SetParent(gameObject.transform, false);
+        instance.transform.SetParent(this.transform, false);
         instance.OwningPool = this;
         return instance;
     }
@@ -90,6 +89,13 @@ public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
     public T Spawn()
     {
         return pool.Get();
+    }
+
+    public T Spawn(Vector3 position)
+    {
+        T obj = pool.Get();
+        obj.transform.position = position;
+        return obj; 
     }
 
     public void ReturnToPool(T instance)

@@ -16,7 +16,7 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
     private List<T> activePoolElements;
     private Queue<T> inactivePoolElements;
 
-    public ObjectPool(Func<T> actionOnCreate, Action<T> actionOnGet, Action<T> actionOnRelease, Action<T> actionOnDestroy, int initialCapacity,bool isActiveByDefault)
+    public ObjectPool(Func<T> actionOnCreate, Action<T> actionOnGet, Action<T> actionOnRelease, Action<T> actionOnDestroy, int initialCapacity)
     {
         Capacity = initialCapacity;
         this.actionOnCreate = actionOnCreate;       
@@ -29,16 +29,8 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         for (uint i = 0; i < Capacity; i++)
         {
             var obj = actionOnCreate();
-           // inactivePoolElements.Enqueue(obj);
-            //obj.gameObject.SetActive(isActiveByDefault);
-            if (isActiveByDefault)
-            {
-                actionOnGet(obj);
-            }
-            else
-            {
-                actionOnRelease(obj);
-            }  
+            inactivePoolElements.Enqueue(obj);
+            obj.gameObject.SetActive(false);
         }
     }
 

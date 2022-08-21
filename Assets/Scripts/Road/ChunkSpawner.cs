@@ -45,7 +45,6 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
     {
         yield return waitBeforeSpawn;
         chunkPool.ReturnToPool(chunk);
-    }
-    
+    }   
 }
 

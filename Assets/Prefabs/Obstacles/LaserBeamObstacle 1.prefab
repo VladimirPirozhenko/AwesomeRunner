@@ -5281,7 +5281,7 @@ GameObject:
   - component: {fileID: -8415324043260685200}
   - component: {fileID: 1025123548548066387}
   - component: {fileID: 2240087943492607746}
-  - component: {fileID: 3953346016385785347}
+  - component: {fileID: -3636486291207348804}
   m_Layer: 0
   m_Name: LaserBeamObstacle 1
   m_TagString: Untagged
@@ -5346,7 +5346,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.1129975, y: 1.5209706, z: 1}
   m_Center: {x: 4.0537443, y: 0.59287155, z: 0}
---- !u!114 &3953346016385785347
+--- !u!114 &-3636486291207348804
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -29,9 +29,6 @@ Shader "Custom/CurvedSurfaceStandardCutout"
         sampler2D _EmissionMap;
         fixed4 _EmissionColor;
 
-        float _CurveStrength_x;
-        float _CurveStrength_y;      
-
         struct Input
         {    
             float2 uv_MainTex;  
@@ -41,27 +38,7 @@ Shader "Custom/CurvedSurfaceStandardCutout"
             float2 texcoord;
         };
 
-        void vert(inout appdata_full v, out Input o)
-        {
-            float4 pos ;
-            float2 uv ; 
-            UNITY_INITIALIZE_OUTPUT(Input, o);
-            pos = UnityObjectToClipPos(v.vertex);
-            uv = v.texcoord;
-            float4 worldPosition = mul(unity_WorldToCamera, mul(unity_ObjectToWorld, v.vertex));
-            float dist = length(float2(worldPosition.x, worldPosition.z));
-            worldPosition.y -= _CurveStrength_y * dist * dist;//* _ProjectionParams.x;
-            worldPosition.x -= _CurveStrength_x * dist * dist; //* _ProjectionParams.x;
-            v.vertex = mul(unity_WorldToObject, mul(unity_CameraToWorld, worldPosition));
-            //this question helped https://stackoverflow.com/questions/50512600/send-vertice-shader-changes-to-surface-shader
-            //float dist = UNITY_Z_0_FAR_FROM_CLIPSPACE(pos.z);
-            //float4 worldPosition = mul(unity_ObjectToWorld, v.vertex);  // get world space position of vertex
-            //worldPosition.y -= _CurveStrength_y * dist * dist * _ProjectionParams.x;
-            //worldPosition.x -= _CurveStrength_x * dist * dist * _ProjectionParams.x;
-            //// offset vertical position by factor and square of distance.
-            //// the default 0.01 would lower the position by 1cm at 1m distance, 1m at 10m and 100m at 100m
-            //v.vertex = mul(unity_WorldToObject, worldPosition);
-        }
+        #include "CurvedCode.cginc"
 
         sampler2D _MainTex;
 

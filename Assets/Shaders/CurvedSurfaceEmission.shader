@@ -25,8 +25,8 @@ Shader "Custom/CurvedSurfaceEmissionOnly"
             fixed4 _EmissionColor;
             //float4 MainTex_ST;
             sampler2D MainTex;
-            float _CurveStrength_x;
-            float _CurveStrength_y;
+            //float _CurveStrength_x;
+            //float _CurveStrength_y;
 
             struct Input
             {
@@ -35,34 +35,7 @@ Shader "Custom/CurvedSurfaceEmissionOnly"
                 float2 texcoord;
             };
 
-            void vert(inout appdata_full v, out Input o)
-            {
-                float4 pos;
-                float2 uv;
-                UNITY_INITIALIZE_OUTPUT(Input, o);
-                pos = UnityObjectToClipPos(v.vertex);
-                uv = v.texcoord;
-
-                //this question helped https://stackoverflow.com/questions/50512600/send-vertice-shader-changes-to-surface-shader
-                //float dist = UNITY_Z_0_FAR_FROM_CLIPSPACE(pos.z);
-                //float4 worldPosition = mul(unity_ObjectToWorld, v.vertex);
-                //// get world space position of vertex
-                //half2 wpToCam = _WorldSpaceCameraPos.xz - worldPosition.xz;
-                //// get vector to camera and dismiss vertical component
-                //half distance = dot(wpToCam, wpToCam);
-                //// distance squared from vertex to the camera, this power gives the curvature
-                ////worldPosition.y -= distance * 0.001;
-                //worldPosition.y -= _CurveStrength_y * dist * dist * _ProjectionParams.x;
-                //worldPosition.x -= _CurveStrength_x * dist * dist * _ProjectionParams.x;
-                //// offset vertical position by factor and square of distance.
-                //// the default 0.01 would lower the position by 1cm at 1m distance, 1m at 10m and 100m at 100m
-                //v.vertex = mul(unity_WorldToObject, worldPosition);
-                float4 worldPosition = mul(unity_WorldToCamera, mul(unity_ObjectToWorld, v.vertex));
-                float dist = length(float2(worldPosition.x, worldPosition.z));
-                worldPosition.y -= _CurveStrength_y * dist * dist;//* _ProjectionParams.x;
-                worldPosition.x -= _CurveStrength_x * dist * dist; //* _ProjectionParams.x;
-                v.vertex = mul(unity_WorldToObject, mul(unity_CameraToWorld, worldPosition));
-            }
+            #include "CurvedCode.cginc"
 
             sampler2D _MainTex;
 
