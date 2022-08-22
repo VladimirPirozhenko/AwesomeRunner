@@ -2921,7 +2921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506813849e0819640b461c8c8c8331b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 30
+  capacity: 10
   prefab: {fileID: 7423857566743054097, guid: 9b90fe6584244f945a5cf4bfffd577c7, type: 3}
   spawner: {fileID: 1872880027}
 --- !u!1001 &6634832997626976595

@@ -24,18 +24,6 @@ public abstract class Chunk : PoolingObject<Chunk>, IResettable
         Obstacles = new List<Obstacle>();
         InitializeGrid();
     }
-    private void Awake()
-    {
-        //Collider = GetComponent<BoxCollider>();
-        //Coins = new List<Coin>();   
-        //Obstacles = new List<Obstacle>();
-        //InitializeGrid();
-    }
-
-    public void Start()
-    {
-        //InitializeGrid();
-    }
 
     private void InitializeGrid()
     {
@@ -70,7 +58,7 @@ public abstract class Chunk : PoolingObject<Chunk>, IResettable
 
     private void ChangePositionBasedOnPreviousChunk(Chunk previousChunk)
     {
-        float diffBetweenBeginAndCenter = Begin.localPosition.z;
+        //float diffBetweenBeginAndCenter = Begin.localPosition.z;
         transform.position = previousChunk.End.position - Begin.localPosition;
     }
     private void ChangeRotationBasedOnPreviousChunk(Chunk previousChunk)

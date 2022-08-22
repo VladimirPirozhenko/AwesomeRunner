@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -13,9 +14,9 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
     private Action<T> actionOnRelease;
     private Action<T> actionOnDestroy;
 
-    private List<T> activePoolElements;
-    private Queue<T> inactivePoolElements;
-
+    private readonly List<T> activePoolElements;
+    private readonly Queue<T> inactivePoolElements;
+    private readonly Dictionary<int,Component> componentCache;
     public ObjectPool(Func<T> actionOnCreate, Action<T> actionOnGet, Action<T> actionOnRelease, Action<T> actionOnDestroy, int initialCapacity)
     {
         Capacity = initialCapacity;
@@ -25,6 +26,7 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         this.actionOnDestroy = actionOnDestroy;
         activePoolElements = new List<T>();
         inactivePoolElements = new Queue<T>();
+        componentCache = new Dictionary<int,Component>(); 
 
         for (uint i = 0; i < Capacity; i++)
         {
@@ -73,6 +75,73 @@ public class ObjectPool<T> : IEnumerable<T> where T : MonoBehaviour
         }
         T instance = ExpandPool();
         return instance;
+    }
+
+//    (int id, Type type) key = (obj.GetInstanceID(), typeof(T));
+//    T component;
+
+//            if (_componentCache.ContainsKey(key))
+//            {
+//                component = _componentCache[key] as T;
+//                if (component == null) { _componentCache.Remove(key); }
+//                else { return component; }
+//            }
+
+//            component = obj.GetComponent<T>();
+//if (component != null) { _componentCache[key] = component; }
+//return component;
+
+    public C GetComponentFromPool<C>() where C : Component
+    {
+        C component = null; 
+      
+        if (TryGet(out var element))
+        {
+            int key = element.GetInstanceID();  
+            if (componentCache.ContainsKey(key))
+            {
+                component = componentCache[key] as C;    
+                if (component == null)
+                    componentCache.Remove(key); 
+                else
+                    return component; 
+            }
+            component = element.GetComponent<C>();
+            if (component)
+            {
+                componentCache[key] = component;
+            }  
+            return component;
+        }
+        T instance = ExpandPool();
+        int key1 = instance.GetInstanceID();
+        component = instance.GetComponent<C>();
+        if (component)
+        {
+            componentCache[key1] = component;
+        }
+        return component;
+    }
+
+    public C GetComponentFromPool<C>(T obj) where C :  Component
+    {
+        C component = null;
+        int key = obj.GetHashCode();
+        if (componentCache.TryGetValue(key, out var value))
+        {
+  
+            return value as C;
+        }
+        else
+        {
+            componentCache.Remove(key);
+        }
+        component = obj.GetComponent<C>();
+        if (component)
+        {
+            componentCache[key] = component;
+        }
+        return component;
     }
 
     private T ExpandPool()

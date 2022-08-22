@@ -34,10 +34,8 @@ public class FollowingCamera : MonoBehaviour
     {
 
         Vector3 moveVector = new Vector3(target.position.x, target.position.y, target.position.z);
-        //new Vector3(xAmount, 0, zAmount);
-     
-        Quaternion rotationVector = Quaternion.Euler(target.rotation.y, target.rotation.y, defaultTargetRotation.z);
-        float curveX = GameSession.Instance.Curver.CurveStrengthX;
+        //Quaternion rotationVector = Quaternion.Euler(target.rotation.y, target.rotation.y, defaultTargetRotation.z);
+        //float curveX = GameSession.Instance.Curver.CurveStrengthX;
         camTransform.rotation = target.rotation;
         Vector3 toPos = moveVector + (target.rotation * defaultDistance);
         //Vector3 toPos = target.position + (target.rotation * defaultDistance);

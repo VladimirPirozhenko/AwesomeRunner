@@ -1,6 +1,11 @@
 using UnityEngine;
 
-public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
+public interface IBasePool
+{
+
+}
+
+public abstract class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
 {
     [SerializeField] private int capacity;
     [SerializeField] private T prefab; 
@@ -15,6 +20,7 @@ public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
         InitialCapacity = capacity;
     }
 
+    #region Actions
     protected virtual T CreateAction()
     {
         T instance = Instantiate(prefab);
@@ -32,11 +38,14 @@ public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
     {
         instance.gameObject.SetActive(false);
     }
+
     protected virtual void DestroyAction(T instance)
     {
         Destroy(instance.gameObject);
     }
+    #endregion
 
+    #region CountElements
     public int GetActiveElementCount()
     {
         return pool.GetActiveElementsCount();
@@ -46,17 +55,31 @@ public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
     {
         return pool.GetInactiveElementsCount();
     }
+    #endregion
 
+    #region ContiansCheck
     public bool ContainsElement(T element)
     {
         return pool.ContainsElement(element);
     }
-
+   
     public bool ContainsElement(T element, bool isActive)
     {
         return pool.ContainsElement(element, isActive);
     }
+    #endregion
 
+    #region GetFromPool
+    public T Spawn()
+    {
+        return pool.Get();
+    }
+    public T Spawn(Vector3 position)
+    {
+        T obj = pool.Get();
+        obj.transform.position = position;
+        return obj;
+    }
     public bool TryGetFromPos(in Vector3 pos, out T element)
     {
         if (pool.TryGetFromPos(pos, out element))
@@ -66,6 +89,31 @@ public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
         return false;
     }
 
+    public Component GetComponentFromPool<C>() where C : Component
+    {
+        return pool.GetComponentFromPool<C>();
+    }
+
+    public C GetComponentFromPool<C>(T obj) where C : Component
+    {
+        return pool.GetComponentFromPool<C>(obj);  
+    }
+
+    #endregion
+
+    #region ReturnToPool
+    public void ReturnAllElementsToPool()
+    {
+        pool.ReturnAllElementsToPool();
+    }
+
+    public void ReturnToPool(T instance)
+    {
+        pool.ReturnToPool(instance);
+    }
+    #endregion
+
+    #region DestroyFromPool
     public void Destroy(T obj)
     {
         pool.Destroy(obj);
@@ -80,27 +128,6 @@ public class BasePool<T> : MonoBehaviour where T : PoolingObject<T>
     {
         pool.DestroyAllElements(isActive);  
     }
-
-    public void ReturnAllElementsToPool()
-    {
-        pool.ReturnAllElementsToPool();    
-    }
-
-    public T Spawn()
-    {
-        return pool.Get();
-    }
-
-    public T Spawn(Vector3 position)
-    {
-        T obj = pool.Get();
-        obj.transform.position = position;
-        return obj; 
-    }
-
-    public void ReturnToPool(T instance)
-    {
-        pool.ReturnToPool(instance);
-    }
+    #endregion
 }
 

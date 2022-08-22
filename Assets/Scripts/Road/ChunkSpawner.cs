@@ -1,8 +1,5 @@
-
-using System;
 using System.Collections;
 using UnityEngine;
-
 
 public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
 {
@@ -30,8 +27,7 @@ public class ChunkSpawner : MonoBehaviour // TODO: ISpawner
 
     public void Spawn()
     {
-        Chunk newChunk = chunkPool.Spawn();
-        newChunk.gameObject.SetActive(true);   
+        Chunk newChunk = chunkPool.Spawn(); 
         newChunk.ChangeTransformBasedOnPreviousChunk(lastChunk);
         chunkGenerator.Generate(newChunk);
         lastChunk = newChunk;

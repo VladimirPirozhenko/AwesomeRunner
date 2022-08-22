@@ -32,8 +32,13 @@ public class WorldCurver : MonoBehaviour
 
 	public void TurnWorldToLeft()
     {
-
-    }
+		var startRange = -0.003f;   
+		var endRange = 0.003f;   
+		var oscilationRange = (endRange - startRange) / 2;
+		var oscilationOffset = oscilationRange + startRange;
+		//float time = Mathf.Lerp(Time.time * 0.05f, 1);
+		CurveStrengthX = Mathf.Lerp(startRange, endRange, Time.time);
+	}
 	public void SinCurveX()
     {
 		var startRange = -0.003f;    //your chosen start value
