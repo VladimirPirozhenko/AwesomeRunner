@@ -41,15 +41,27 @@ public class ScoreboardView : BaseView
     {
         //if (playerCards.ContainsKey(cardTag))
         //{
-            //playerCards.TryGetValue(cardTag, out PlayerScoreboardCard playerScoreboardCard);
-            //playerScoreboardCard.gameObject.SetActive(false); //TODO: Pooling
-            //playerCards.Remove(cardTag);
+        //playerCards.TryGetValue(cardTag, out PlayerScoreboardCard playerScoreboardCard);
+        //playerScoreboardCard.gameObject.SetActive(false); //TODO: Pooling
+        //playerCards.Remove(cardTag);
         //}
+        foreach (var playerCard in playerCards)
+        {
+            if (cardTag == playerCard.name)
+            {
+                playerCard.gameObject.SetActive(false);
+                playerCards.Remove(playerCard);
+            }
+        }
     }
 
     public void RefreshPlayerCard(PlayerScoreboardCardData cardData)
     {
         //if (playerCards.TryGetValue(cardData.playerName, out PlayerScoreboardCard card))
-       //     card.UpdateCard(cardData);
+        foreach (var playerCard in playerCards)
+        {
+            if (cardData.playerName == playerCard.name)
+                playerCard.UpdateCard(cardData);
+        }               
     }
 }
