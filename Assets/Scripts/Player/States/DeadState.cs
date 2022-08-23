@@ -13,6 +13,7 @@ public class DeadState : PlayerState
         playerSM.VerticalDeltaPosition = 0;
         playerSM.HorizontalDeltaPosition = Vector3.zero;
         GameSession.Instance.RestrictInputs(InputConstants.InGameCommands, true);
+       
         //Session.ShowGameOverPopUp(true);
         // Session.SetGameOverState();
         // Stats.CalculateScore();

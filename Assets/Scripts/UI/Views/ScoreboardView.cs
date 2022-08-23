@@ -7,8 +7,8 @@ public class ScoreboardView : BaseView
     [SerializeField] private Button backButton;
     [SerializeField] private PlayerScoreboardCard cardPrefab;
     private VerticalLayoutGroup layoutGroup;
-    private readonly Dictionary<string,PlayerScoreboardCard> playerCards = new Dictionary<string, PlayerScoreboardCard>();
-
+    //private readonly Dictionary<string,PlayerScoreboardCard> playerCards = new Dictionary<string, PlayerScoreboardCard>();
+    private readonly List<PlayerScoreboardCard> playerCards = new List<PlayerScoreboardCard>();
     public override void Init()
     {
         base.Init();
@@ -29,27 +29,27 @@ public class ScoreboardView : BaseView
        
     private void AddPlayerCard(PlayerScoreboardCardData cardData)
     {
-        if (playerCards.ContainsKey(cardData.playerName))
-            return;
+       //if (playerCards.ContainsKey(cardData.playerName))
+        //    return;
         PlayerScoreboardCard playerScoreboardCard = Instantiate(cardPrefab);
         playerScoreboardCard.transform.SetParent(layoutGroup.transform, false);
         playerScoreboardCard.UpdateCard(cardData);   
-        playerCards.Add(cardData.playerName, playerScoreboardCard);
+        playerCards.Add(playerScoreboardCard);
     }
 
     public void RemovePlayerCard(string cardTag)
     {
-        if (playerCards.ContainsKey(cardTag))
-        {
-            playerCards.TryGetValue(cardTag, out PlayerScoreboardCard playerScoreboardCard);
-            playerScoreboardCard.gameObject.SetActive(false); //TODO: Pooling
-            playerCards.Remove(cardTag);
-        }
+        //if (playerCards.ContainsKey(cardTag))
+        //{
+            //playerCards.TryGetValue(cardTag, out PlayerScoreboardCard playerScoreboardCard);
+            //playerScoreboardCard.gameObject.SetActive(false); //TODO: Pooling
+            //playerCards.Remove(cardTag);
+        //}
     }
 
     public void RefreshPlayerCard(PlayerScoreboardCardData cardData)
     {
-        if (playerCards.TryGetValue(cardData.playerName, out PlayerScoreboardCard card))
-            card.UpdateCard(cardData);
+        //if (playerCards.TryGetValue(cardData.playerName, out PlayerScoreboardCard card))
+       //     card.UpdateCard(cardData);
     }
 }

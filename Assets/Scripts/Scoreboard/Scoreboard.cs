@@ -21,7 +21,7 @@ public class Scoreboard : MonoBehaviour, ICommandTranslator
     private void Start()
     {
         GameSession.Instance.AddCommandTranslator(this);
-        string jsonScoreboardEntries = PlayerPrefs.GetString("ScoreboardEntriesTableT1"); //Binary file
+        string jsonScoreboardEntries = PlayerPrefs.GetString("ScoreboardEntriesTableTest"); //Binary file
         ScoreboardEntriesTable entriesTable = JsonUtility.FromJson<ScoreboardEntriesTable>(jsonScoreboardEntries);
         if (entriesTable == null)
             return;
@@ -47,12 +47,14 @@ public class Scoreboard : MonoBehaviour, ICommandTranslator
     {
         entries.Add(entry);
         OnEntryAdded?.Invoke(entry);
+        SaveScoreboardEntriesTable();
     }   
+
     public void SaveScoreboardEntriesTable()
     {
         ScoreboardEntriesTable scoreboardEntriesTable = new ScoreboardEntriesTable(entries);
         string jsonScoreboardEntries = JsonUtility.ToJson(scoreboardEntriesTable);
-        PlayerPrefs.SetString("ScoreboardEntriesTableT1", jsonScoreboardEntries);
+        PlayerPrefs.SetString("ScoreboardEntriesTableTest", jsonScoreboardEntries);
         PlayerPrefs.Save();
     }
 

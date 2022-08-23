@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameSession : MonoBehaviour,IResettable
 {
     [SerializeField] private Player currentPlayer;
+    [SerializeField] private Scoreboard scoreboard;
     public static GameSession Instance { get; private set; } 
     public WorldCurver Curver { get; private set; }
     private IInputTranslator inputTranslator;
@@ -34,7 +35,7 @@ public class GameSession : MonoBehaviour,IResettable
        Curver.Tick();
         // curver.SinCurveX();
         // Curver.SinCurveY();
-       Curver.TurnWorldToLeft();
+       //Curver.TurnWorldToLeft();
     }
 
     private void Init()
@@ -81,6 +82,11 @@ public class GameSession : MonoBehaviour,IResettable
     public void RestrictInputs(List<ECommand> commands,bool isRestricted)
     {
         inputTranslator.RestictTranslation(commands, isRestricted);
+    }
+
+    public void UpdateScoreboard(ScoreboardEntry entry)
+    {
+        scoreboard.AddScoreboardEntry(entry);
     }
 
     public void RestartSession()

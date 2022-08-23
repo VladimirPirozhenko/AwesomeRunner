@@ -107,7 +107,8 @@ public class Player : MonoBehaviour,IResettable, ICommandTranslator
 
     private void Die()
     {
-        PlayerStateMachine.SetState(PlayerStateMachine.PlayerDeadState);    
+        PlayerStateMachine.SetState(PlayerStateMachine.PlayerDeadState);
+        GameSession.Instance.UpdateScoreboard(new ScoreboardEntry(name,PlayerStatictics.Score));
     }
 
     public IEnumerator GrantInvincibility()
