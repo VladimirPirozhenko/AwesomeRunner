@@ -2,22 +2,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+public class ScoreboardEntriesTable
+{
+    public ScoreboardEntriesTable(List<ScoreboardEntry> entries)
+    {
+        this.entries = entries; 
+    }
+    public List<ScoreboardEntry> entries = new List<ScoreboardEntry>();
+}
 
 public class Scoreboard : MonoBehaviour, ICommandTranslator
 {
+    [SerializeField] private int maxEntries;
     private List<ScoreboardEntry> entries = new List<ScoreboardEntry>();
 
     public event Action<ScoreboardEntry> OnEntryAdded;
 
     [SerializeField] private ScoreboardView scoreboardView;
-    private class ScoreboardEntriesTable
-    {
-        public ScoreboardEntriesTable(List<ScoreboardEntry> entries)
-        {
-            this.entries = entries; 
-        }
-        public List<ScoreboardEntry> entries = new List<ScoreboardEntry>();
-    }
+
     private void Start()
     {
         GameSession.Instance.AddCommandTranslator(this);
@@ -28,30 +30,40 @@ public class Scoreboard : MonoBehaviour, ICommandTranslator
         if (entriesTable.entries == null)
             return;
         List<PlayerScoreboardCardData> scoreboardCardDatas = new List<PlayerScoreboardCardData>();  
-        for (int i = 0; i < entriesTable.entries.Count; i++)
+        for (int i = 0; i <entriesTable.entries.Count; i++)
         {
             entries.Add(entriesTable.entries[i]);
             OnEntryAdded?.Invoke(entriesTable.entries[i]);
             PlayerScoreboardCardData cardData = new PlayerScoreboardCardData(entriesTable.entries[i].Name, entriesTable.entries[i].Score.ToString());
             scoreboardCardDatas.Add(cardData);
         }  
+        SortScoreboardByHighscore();
         scoreboardView.AddPlayerCards(scoreboardCardDatas);
     }
+
     public void AddScoreboardEntry(string entryName, int entryScore)
     {
         ScoreboardEntry entry = new ScoreboardEntry(entryName, entryScore);
         entries.Add(entry);
         OnEntryAdded?.Invoke(entry);
     }
+
+    public void SortScoreboardByHighscore()
+    {
+        entries.Sort((x,y) => y.Score.CompareTo(x.Score));
+    }
+
     public void AddScoreboardEntry(ScoreboardEntry entry)
     {
         entries.Add(entry);
         OnEntryAdded?.Invoke(entry);
         SaveScoreboardEntriesTable();
+        Debug.Log("SAVED");
     }   
 
     public void SaveScoreboardEntriesTable()
     {
+        SortScoreboardByHighscore();
         ScoreboardEntriesTable scoreboardEntriesTable = new ScoreboardEntriesTable(entries);
         string jsonScoreboardEntries = JsonUtility.ToJson(scoreboardEntriesTable);
         PlayerPrefs.SetString("ScoreboardEntriesTableTest", jsonScoreboardEntries);

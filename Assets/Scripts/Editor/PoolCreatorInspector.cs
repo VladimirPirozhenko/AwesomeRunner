@@ -157,7 +157,7 @@ public class PoolCreatorInspector : Editor
     {
         if (inputFilePath.StartsWith(separator, StringComparison.OrdinalIgnoreCase) == false && inputFilePath.Contains(separator))
         {
-            return inputFilePath.Split(separator).Last();
+            return inputFilePath.Split(separator.ToCharArray()).Last();
         }
         return inputFilePath;   
     }
