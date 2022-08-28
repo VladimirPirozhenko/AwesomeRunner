@@ -30,14 +30,15 @@ public class Scoreboard : MonoBehaviour, ICommandTranslator
         if (entriesTable.entries == null)
             return;
         List<PlayerScoreboardCardData> scoreboardCardDatas = new List<PlayerScoreboardCardData>();  
-        for (int i = 0; i <entriesTable.entries.Count; i++)
+        for (int i = 0; i < entriesTable.entries.Count; i++)
         {
             entries.Add(entriesTable.entries[i]);
             OnEntryAdded?.Invoke(entriesTable.entries[i]);
             PlayerScoreboardCardData cardData = new PlayerScoreboardCardData(entriesTable.entries[i].Name, entriesTable.entries[i].Score.ToString());
             scoreboardCardDatas.Add(cardData);
-        }  
-        SortScoreboardByHighscore();
+        }
+        SortScoreboardEntriesByHighscore(entries);
+        SortScoreboardCardsDatasByHighscore(scoreboardCardDatas);
         scoreboardView.AddPlayerCards(scoreboardCardDatas);
     }
 
@@ -48,9 +49,14 @@ public class Scoreboard : MonoBehaviour, ICommandTranslator
         OnEntryAdded?.Invoke(entry);
     }
 
-    public void SortScoreboardByHighscore()
+    public void SortScoreboardEntriesByHighscore(List<ScoreboardEntry> entries)
     {
         entries.Sort((x,y) => y.Score.CompareTo(x.Score));
+    }
+
+    public void SortScoreboardCardsDatasByHighscore(List<PlayerScoreboardCardData> scoreboardCardDatas)
+    {
+        scoreboardCardDatas.Sort((x, y) => y.playerScore.CompareTo(x.playerScore));
     }
 
     public void AddScoreboardEntry(ScoreboardEntry entry)
@@ -58,12 +64,11 @@ public class Scoreboard : MonoBehaviour, ICommandTranslator
         entries.Add(entry);
         OnEntryAdded?.Invoke(entry);
         SaveScoreboardEntriesTable();
-        Debug.Log("SAVED");
     }   
 
     public void SaveScoreboardEntriesTable()
     {
-        SortScoreboardByHighscore();
+        SortScoreboardEntriesByHighscore(entries);
         ScoreboardEntriesTable scoreboardEntriesTable = new ScoreboardEntriesTable(entries);
         string jsonScoreboardEntries = JsonUtility.ToJson(scoreboardEntriesTable);
         PlayerPrefs.SetString("ScoreboardEntriesTableTest", jsonScoreboardEntries);
