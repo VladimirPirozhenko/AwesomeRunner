@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5750222509257206156
+--- !u!1 &5507748125980828843
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,43 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5750222509257206154}
-  - component: {fileID: 5750222509257206155}
+  - component: {fileID: 8976795358065207428}
+  - component: {fileID: 2098471787973801869}
   m_Layer: 0
-  m_Name: ChunkPool
+  m_Name: LaserBeamObstaclePool 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5750222509257206154
+--- !u!4 &8976795358065207428
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5750222509257206156}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -500.42767, y: -332.09, z: 1.6611246}
+  m_GameObject: {fileID: 5507748125980828843}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5750222509257206155
+--- !u!114 &2098471787973801869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5750222509257206156}
+  m_GameObject: {fileID: 5507748125980828843}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 506813849e0819640b461c8c8c8331b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 1290664e863a3d34596917f255587b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 30
-  isActiveByDefault: 1
-  prefab: {fileID: 7423857566743054097, guid: 9b90fe6584244f945a5cf4bfffd577c7, type: 3}
-  spawner: {fileID: 0}
+  capacity: 20
+  prefab: {fileID: 6716018880928220119, guid: aa7da947970bb714fa7924d204fe2bdd, type: 3}

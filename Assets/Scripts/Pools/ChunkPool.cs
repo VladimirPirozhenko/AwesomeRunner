@@ -1,14 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class ChunkPool : BasePool<Chunk>
-{  
+{
     [SerializeField] private ChunkSpawner spawner;
 
-    protected override Chunk CreateAction() 
+    protected override Chunk CreateAction()
     {
         Chunk chunk = base.CreateAction();
         chunk.Init(spawner);
-        chunk.transform.position = new Vector3(0,0,0);    
+        chunk.transform.position = new Vector3(0, 0, 0);
         return chunk;
     }
 

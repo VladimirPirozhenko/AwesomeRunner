@@ -20,6 +20,9 @@ public class PoolCreatorInspector : Editor
     private const string defaultScriptPath = "Scripts/Pools";
     private string generatedScriptPath = "Scripts/Pools";
     private const string assetsString = "Assets/";
+    private string generatedClassTypeString;
+    private Type generatedClassType;
+    PoolCodeGenerator generator;
     private void OnEnable()
     {
         AssemblyReloadEvents.afterAssemblyReload += GeneratePoolPrefab;
@@ -83,8 +86,9 @@ public class PoolCreatorInspector : Editor
             }
             generatedScriptPath = TrimFilePathBeforeSeparator(generatedScriptPath, assetsString);
             if (!Directory.Exists($"{Application.dataPath}/{generatedScriptPath}"))
-                Directory.CreateDirectory($"{Application.dataPath}/{generatedScriptPath}");
-            PoolCodeGenerator generator = new PoolCodeGenerator($"{Application.dataPath}/{generatedScriptPath}/{targetClassName}.cs", targetClassName, poolNamespaceName, poolObjectName);
+                Directory.CreateDirectory($"{Application.dataPath}/{generatedScriptPath}");//{targetClassName}.cs
+            generator = new PoolCodeGenerator($"{Application.dataPath}/{generatedScriptPath}/", targetClassName, poolNamespaceName, poolObjectName,target.GetType());
+           
             //var relativePath = $"{Application.dataPath}/{generatedScriptPath}/{targetClassName}.cs";
             generator.GenerateCSharpCode();
            // AssetDatabase.ImportAsset(relativePath);
@@ -92,6 +96,7 @@ public class PoolCreatorInspector : Editor
             EditorUtility.RequestScriptReload();
             AssetDatabase.SaveAssets();
             pendingToGeneration = true;
+            generatedClassTypeString = generator.generatedClassType.ToString(); 
             GUIUtility.ExitGUI();
         }
         EditorGUILayout.EndToggleGroup();
@@ -103,24 +108,31 @@ public class PoolCreatorInspector : Editor
         if (pendingToGeneration == false)
             return;
         pendingToGeneration = false;
-
+        targetClassName = generatedClassTypeString;
         GameObject poolingObject = new GameObject(targetClassName);
-        Type poolingObjectType = target.GetType();
+        Type poolingObjectType = target.GetType().BaseType;//generatedClassType;//
         Assembly assem = poolingObjectType.Assembly;
-        string poolName = $"{target.name}Pool";
-        Type poolType = assem.GetType($"{poolNamespaceName}.{targetClassName}");
+      
+        targetClassName = poolingObjectType.ToString();
+        string poolName = $"{targetClassName}Pool";
+     
+        Type poolType = assem.GetType($"{poolNamespaceName}.{poolName}");
 
         poolingObject.AddComponent(poolType);
         poolingObject.name = poolName;
 
         Type typeOfField = poolType;
+
         FieldInfo fieldInfo = null;
+
         while (fieldInfo == null && typeOfField != null)
         {
             fieldInfo = typeOfField.GetField("prefab", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             typeOfField = typeOfField.BaseType;
         }
-        if (fieldInfo == null) throw new ArgumentOutOfRangeException("Prefab", string.Format("Field {0} was not found in Type {1}", "prefab", typeOfField.FullName));
+
+        if (fieldInfo == null) 
+            throw new ArgumentOutOfRangeException("Prefab", string.Format("Field {0} was not found in Type {1}", "prefab", typeOfField.FullName));
 
         var poolingObjectComponent = poolingObject.GetComponent(poolType);
         fieldInfo.SetValue(poolingObjectComponent, target);

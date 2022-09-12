@@ -2,6 +2,8 @@
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.IO;
+using System;
+using System.Collections.Generic;
 
 public class PoolCodeGenerator
 {
@@ -10,8 +12,8 @@ public class PoolCodeGenerator
     private string poolNameSpaceName;
     private CodeTypeDeclaration targetClass;
     private string outputFilePath;
-
-    public PoolCodeGenerator(string outputFilePath, string targetClassName, string poolNameSpaceName, string pooledObjectClassName)
+    public Type generatedClassType { get; private set; }
+    public PoolCodeGenerator(string outputFilePath, string targetClassName, string poolNameSpaceName, string pooledObjectClassName,Type pooledObjectClassType)
     {
 
         this.targetClassName = targetClassName;
@@ -25,9 +27,32 @@ public class PoolCodeGenerator
         targetClass.Name = this.targetClassName;
         targetClass.TypeAttributes =
             TypeAttributes.Public| TypeAttributes.Sealed;
+        Type t = Type.GetType(pooledObjectClassName);
+
+        //Assembly assem = poolingObjectType.Assembly;
+        //string poolName = $"{target.name}Pool";
+        //Type poolType = assem.GetType($"{targetClassName}");
+        var typeHierarchy = pooledObjectClassType.GetClassHierarchy();
+        var linkedTypeHierarchy = new LinkedList<Type>(typeHierarchy);
+        Type baseClass = null;
+        Type baseClassChild = null;
+        foreach (var type in typeHierarchy)
+        {
+            if (type.ToString() == "UnityEngine.MonoBehaviour")
+            {    
+                var baseNode = linkedTypeHierarchy.Find(type);
+                baseClass = baseNode.Previous.Value;
+                var baseNodeChild = linkedTypeHierarchy.Find(baseClass);
+                baseClassChild = baseNodeChild.Previous.Value;  
+            }
+        }
+        //poolNamespace.Types.Add(targetClass);
+        targetClass.Name = baseClassChild.ToString() + "Pool";
+        this.outputFilePath = outputFilePath + targetClass.Name + ".cs";
         poolNamespace.Types.Add(targetClass);
         targetUnit.Namespaces.Add(poolNamespace);
-        targetClass.BaseTypes.Add(new CodeTypeReference("BasePool",new CodeTypeReference(pooledObjectClassName)));//Add("BasePool");
+        targetClass.BaseTypes.Add(new CodeTypeReference("BasePool",new CodeTypeReference(baseClassChild.ToString())));//Add("BasePool");
+        generatedClassType = baseClassChild;
 
     }
 
