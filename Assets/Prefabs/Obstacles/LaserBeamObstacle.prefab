@@ -262,7 +262,7 @@ Transform:
   m_Children:
   - {fileID: 3524204268719183815}
   m_Father: {fileID: 6886930383564810753}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!33 &3499852960922356047
 MeshFilter:
@@ -339,13 +339,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3820142722286266193}
-  m_LocalRotation: {x: -0.020942593, y: -0.00003430247, z: 0.0029469547, w: 0.99977636}
-  m_LocalPosition: {x: 0, y: 1.6800001, z: -0}
-  m_LocalScale: {x: 2.58, y: 0.14999999, z: 0.14999999}
+  m_LocalRotation: {x: -0.020942591, y: -0.000034267603, z: 0.0029469545, w: 0.99977636}
+  m_LocalPosition: {x: 0, y: 1.68, z: 0}
+  m_LocalScale: {x: 2.58, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6886930383564810753}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -2.4, y: -0.011, z: 0.338}
 --- !u!198 &3820142722286266195
 ParticleSystem:
@@ -370,7 +370,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 0.7
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -1511,7 +1511,7 @@ ParticleSystem:
     x:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.7453293
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1564,7 +1564,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.7453293
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1617,7 +1617,7 @@ ParticleSystem:
     curve:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 0.7853982
       minScalar: 0.7853982
       maxCurve:
         serializedVersion: 2
@@ -1667,7 +1667,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    separateAxes: 1
+    separateAxes: 0
   ColorModule:
     enabled: 1
     gradient:
@@ -3926,23 +3926,23 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 0, b: 0, a: 1}
-        key1: {r: 0.09703243, g: 0.1959269, b: 0.19034348, a: 1}
-        key2: {r: 0, g: 0.21698111, b: 0.2107977, a: 0}
+        key0: {r: 1, g: 1, b: 1, a: 1}
+        key1: {r: 1, g: 1, b: 1, a: 1}
+        key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 23323
-        ctime2: 61873
+        ctime1: 65535
+        ctime2: 0
         ctime3: 0
         ctime4: 0
         ctime5: 0
         ctime6: 0
         ctime7: 0
-        atime0: 35466
+        atime0: 0
         atime1: 65535
         atime2: 0
         atime3: 0
@@ -3951,7 +3951,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_NumColorKeys: 3
+        m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
@@ -5282,6 +5282,7 @@ GameObject:
   - component: {fileID: 6716018880928220119}
   - component: {fileID: 1025123548548066387}
   - component: {fileID: 2240087943492607746}
+  - component: {fileID: 6340270343119233866}
   m_Layer: 0
   m_Name: LaserBeamObstacle
   m_TagString: Untagged
@@ -5301,8 +5302,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3528129070486850711}
   - {fileID: 3820142722286266204}
+  - {fileID: 3528129070486850711}
   - {fileID: 204311164261045306}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -5360,6 +5361,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.1129975, y: 1.5209706, z: 1}
   m_Center: {x: 4.0537443, y: 0.59287155, z: 0}
+--- !u!54 &6340270343119233866
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7598995731591288687}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &8716978092205909190
 GameObject:
   m_ObjectHideFlags: 0
