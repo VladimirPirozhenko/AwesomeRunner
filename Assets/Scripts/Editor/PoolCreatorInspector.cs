@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using static UnityEditor.EditorGUI;
 using System.Linq;
+using System.Collections.Generic;
 
 [CustomEditor(typeof(PoolingObject<>),true)]
 public class PoolCreatorInspector : Editor
@@ -23,6 +24,11 @@ public class PoolCreatorInspector : Editor
     private string generatedClassTypeString;
     private Type generatedClassType;
     PoolCodeGenerator generator;
+    private Dictionary<string, System.Reflection.TypeInfo> nameTypeLookup = new Dictionary<string, TypeInfo>();
+    private void Awake()
+    {
+     
+    }
     private void OnEnable()
     {
         AssemblyReloadEvents.afterAssemblyReload += GeneratePoolPrefab;
@@ -110,16 +116,28 @@ public class PoolCreatorInspector : Editor
         pendingToGeneration = false;
         targetClassName = generatedClassTypeString;
         GameObject poolingObject = new GameObject(targetClassName);
-        Type poolingObjectType = target.GetType().BaseType;//generatedClassType;//
-        Assembly assem = poolingObjectType.Assembly;
+        Type poolingObjectType = null;//target.GetType().BaseType;//generatedClassType;//
+       // Assembly assem = poolingObjectType.Assembly;
       
-        targetClassName = poolingObjectType.ToString();
-        string poolName = $"{targetClassName}Pool";
-     
-        Type poolType = assem.GetType($"{poolNamespaceName}.{poolName}");
+ 
+        //poolingObjectType = AppDomain.CurrentDomain
+        //.GetAssemblies()
+        //.SelectMany(x => x.GetTypes())
+        //.FirstOrDefault(t => t.Name == targetClassName).GetType();
+        Type targetType = target.GetType();
+        nameTypeLookup = targetType.Assembly
+           .DefinedTypes.Where(t => t.DeclaringType == null)
+           .ToDictionary(k => k.Name, v => v);
+        poolingObjectType = nameTypeLookup[targetClassName];
 
+        Assembly assem = poolingObjectType.Assembly;    
+        string poolName = $"{targetClassName}Pool";
+        //string poolName = $"{target.name}Pool";
+        Type poolType = assem.GetType($"{poolNamespaceName}.{poolName}");
+        //string poolObjectName = target.GetType().Name;
+       // targetClassName = poolObjectName + "Pool";
         poolingObject.AddComponent(poolType);
-        poolingObject.name = poolName;
+        poolingObject.name = $"{target.name}Pool"; ;
 
         Type typeOfField = poolType;
 
@@ -145,6 +163,7 @@ public class PoolCreatorInspector : Editor
         {
             prefabPath = defaultPrefabPath;
         }
+
         if (!Directory.Exists(prefabPath))
             Directory.CreateDirectory(prefabPath);
 
